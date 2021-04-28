@@ -30,11 +30,11 @@ public class MaskPriceRecordsDaoTest {
 	@Order(1)
 	public void testInsert() {
 		MaskPriceRecords maskPriceRecords = new MaskPriceRecords();
-		maskPriceRecords.setItemNo(1L);
+		maskPriceRecords.setItemNo(2L);
 		maskPriceRecords.setPharmacySeqno(1L);
-		maskPriceRecords.setPrice(new BigDecimal("9.26"));
-		maskPriceRecords.setCreateDate(LocalDate.of(2021, 01, 02));
-		maskPriceRecords.setCreateTime(LocalTime.of(20, 41, 02));
+		maskPriceRecords.setPrice(new BigDecimal("14.18"));
+		maskPriceRecords.setCreateDate(LocalDate.now());
+		maskPriceRecords.setCreateTime(LocalTime.now());
 		MaskPriceRecords result = dao.save(maskPriceRecords);
 		assertNotNull(result, "result not be null");
 	}

@@ -14,7 +14,7 @@ public class Mask{
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="item_no")
-	private Long item_no;
+	private Long itemNo;
 
 	@Column(name="name",length=50)
 	private String name;
@@ -24,15 +24,13 @@ public class Mask{
 	
 	@Column(name="num_of_pack")
 	private int numOfPack;
-	
-	public Long getItem_no() {
-		return item_no;
-	}
 
-	public void setItem_no(Long item_no) {
-		this.item_no = item_no;
+	public Long getItemNo() {
+		return itemNo;
 	}
-
+	public void setItemNo(Long itemNo) {
+		this.itemNo = itemNo;
+	}
 	public String getName() {
 		return name;
 	}
