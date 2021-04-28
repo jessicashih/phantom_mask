@@ -2,18 +2,20 @@ package kdan.jessica.phantommask.repository.service;
 
 import kdan.jessica.phantommask.repository.dao.MaskPriceRecordsDao;
 import kdan.jessica.phantommask.repository.entity.MaskPriceRecords;
-import kdan.jessica.phantommask.repository.entity.Pharmacy;
+import kdan.jessica.phantommask.repository.relation.PharmacyPriceMaskRelation;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,9 @@ import java.util.List;
 public class MaskPriceRecordsDbService {
     @Autowired
     private MaskPriceRecordsDao dao;
+
+    @PersistenceContext
+    private EntityManager em;
 
     public List<MaskPriceRecords> findByPharmacySeqno(List<Long> pharmacySeqnos){
 
@@ -37,5 +42,46 @@ public class MaskPriceRecordsDbService {
             }
         };
         return dao.findAll(specification);
+    }
+
+    public List<PharmacyPriceMaskRelation> pharmacyRelationQuery(BigDecimal priceMoreThan, BigDecimal priceLessThan){
+        // 查詢條件
+        String sql =
+                "SELECT " +
+                "        UUID() as uuid,"+
+                "        p.seq_no as pharmacy_seqno," +
+                "        p.name as pharmacy_name," +
+                "        p.balance as pharmacy_balance," +
+                "        m.item_no as item_no," +
+                "        m.name as mask_name," +
+                "        m.color as mask_color," +
+                "        m.num_of_pack as mask_num_of_pack," +
+                "        mpr.price as mask_price " +
+                "FROM " +
+                "        pharmacie as p " +
+                "left join" +
+                "        mask_price_records as mpr on mpr.pharmacy_seqno = p.seq_no " +
+                "left join" +
+                "        mask as m on mpr.item_no = m.item_no " +
+                "where" +
+                "        mpr.is_delete is null ";
+        Query query = null;
+        if(ObjectUtils.isNotEmpty(priceMoreThan)&&ObjectUtils.isNotEmpty(priceLessThan)){
+            sql=sql+"and mpr.price between ?1 and ?2";
+            query = em.createNativeQuery(sql, PharmacyPriceMaskRelation.class);
+            query.setParameter(1, priceMoreThan);
+            query.setParameter(2, priceLessThan);
+        }else if(ObjectUtils.isNotEmpty(priceMoreThan)){
+            sql=sql+"and mpr.price > ?1 ";
+            query = em.createNativeQuery(sql, PharmacyPriceMaskRelation.class);
+            query.setParameter(1, priceMoreThan);
+        }else if(ObjectUtils.isNotEmpty(priceLessThan)){
+            sql=sql+"and mpr.price < ?1 ";
+            query = em.createNativeQuery(sql, PharmacyPriceMaskRelation.class);
+            query.setParameter(1, priceLessThan);
+        }else{
+            query = em.createNativeQuery(sql, PharmacyPriceMaskRelation.class);
+        }
+        return query.getResultList();
     }
 }
