@@ -1,7 +1,6 @@
 package kdan.jessica.phantommask.service;
 
 import kdan.jessica.phantommask.model.PharmacyRs;
-import kdan.jessica.phantommask.service.impl.MaskService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

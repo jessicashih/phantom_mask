@@ -1,7 +1,7 @@
 package kdan.jessica.phantommask.controller;
 
 import kdan.jessica.phantommask.model.*;
-import kdan.jessica.phantommask.service.impl.MaskService;
+import kdan.jessica.phantommask.service.MaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

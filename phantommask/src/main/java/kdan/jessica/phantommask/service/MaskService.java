@@ -1,4 +1,4 @@
-package kdan.jessica.phantommask.service.impl;
+package kdan.jessica.phantommask.service;
 
 import kdan.jessica.phantommask.model.PharmacyRs;
 

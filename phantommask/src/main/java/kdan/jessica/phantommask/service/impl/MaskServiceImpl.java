@@ -4,7 +4,7 @@ import kdan.jessica.phantommask.model.MaskRs;
 import kdan.jessica.phantommask.model.PharmacyRs;
 import kdan.jessica.phantommask.repository.relation.PharmacyPriceMaskRelation;
 import kdan.jessica.phantommask.repository.service.MaskPriceRecordsDbService;
-import lombok.Data;
+import kdan.jessica.phantommask.service.MaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,11 +14,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class MaskServiceImpl implements  MaskService{
+public class MaskServiceImpl implements MaskService {
 
     @Autowired
     private MaskPriceRecordsDbService priceRecordService;
