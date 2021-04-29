@@ -16,6 +16,10 @@ public class JsonResult<T> {
 		this.state = state;
 		this.data = data;
 	}
+	public JsonResult(Integer state) {
+		super();
+		this.state = state;
+	}
 
 	public JsonResult(Integer state, String message) {
 		super();

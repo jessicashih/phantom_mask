@@ -1,5 +1,6 @@
 package kdan.jessica.phantommask.repository.service;
 
+import kdan.jessica.phantommask.repository.dao.MaskPriceRecordsDao;
 import kdan.jessica.phantommask.repository.entity.MaskPriceRecords;
 import kdan.jessica.phantommask.repository.relation.PharmacyPriceMaskRelation;
 import kdan.jessica.phantommask.repository.relation.TransactionReport;
@@ -10,9 +11,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class MaskPriceRecordsDbServiceTest {
@@ -42,5 +43,14 @@ public class MaskPriceRecordsDbServiceTest {
         List<TransactionReport> result = dbService.findTotalTransaction(startDate, endDate);
         assertEquals(2,result.get(0).getAmountOfItem());
         assertTrue(new BigDecimal("18.52").compareTo(result.get(0).getAmountOfDollar())==0);
+    }
+
+    @Test
+    public void findByItemNoAndPharmacy(){
+        Long itemNo=1L;
+        Long pharmacy=1L;
+        Optional<MaskPriceRecords> result = dbService.findByItemNoAndPharmacy(itemNo, pharmacy);
+        assertNotNull(result.get());
+        assertEquals(1,result.get().getSeqNo());
     }
 }

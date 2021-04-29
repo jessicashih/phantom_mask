@@ -2,9 +2,7 @@ package kdan.jessica.phantommask.controller;
 
 import kdan.jessica.phantommask.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import kdan.jessica.phantommask.service.PharmacyService;
 
@@ -31,5 +29,11 @@ public class PharmacyController extends BaseController{
 	public JsonResult<PharmacyRs> findPharmacyMask(FindPharmacyProductsRq request) {
 		PharmacyRs response = pharamacyService.findPharmacyMask(request.getPharmacySeqno(),request.getSortBy());
 		return new JsonResult<PharmacyRs>(SUCCESS, response);
+	}
+
+	@PostMapping(path="/v1/editNameAndPrice")
+	public  JsonResult<Void> updatePharmacyInfo(@RequestBody EditPharmacyNameAndPriceRq request){
+		pharamacyService.updatePharmacyInfo(request);
+		return new JsonResult<>(SUCCESS);
 	}
 }

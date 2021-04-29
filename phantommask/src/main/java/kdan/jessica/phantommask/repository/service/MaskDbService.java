@@ -1,6 +1,7 @@
 package kdan.jessica.phantommask.repository.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -19,6 +20,9 @@ public class MaskDbService {
 
     @Autowired
     private MaskDao dao;
+
+    public Optional<Mask> findById(Long itemNo){return  dao.findById(itemNo);}
+    public Mask update(Mask mask){return dao.save(mask);}
 
     public List<Mask> findByItemNoIn(List<Long> itemNos){
         Specification<Mask> specification = new Specification<>() {

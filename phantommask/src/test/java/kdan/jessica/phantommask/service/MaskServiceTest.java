@@ -34,4 +34,11 @@ public class MaskServiceTest {
         assertEquals(2,response.getDetail().size());
 
     }
+
+    @Test
+    public void updateName(){
+        Long itemNo = 1L;
+        String itemName = "Masquerade-aaaaaaaaa";
+        maskService.updateName(itemNo,itemName);
+    }
 }

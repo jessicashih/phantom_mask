@@ -11,4 +11,6 @@ public interface MaskService {
     List<PharmacyRs> queryMaskPrice(BigDecimal priceMoreThan, BigDecimal priceLessThan);
 
     TransactionRepostRs findTotalTransaction(String startDate, String endDate);
+
+    void updateName(Long itemNo, String itemName);
 }

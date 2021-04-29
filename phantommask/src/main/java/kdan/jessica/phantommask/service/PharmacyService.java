@@ -1,5 +1,6 @@
 package kdan.jessica.phantommask.service;
 
+import kdan.jessica.phantommask.model.EditPharmacyNameAndPriceRq;
 import kdan.jessica.phantommask.model.FindOpenPharmaciesRs;
 import kdan.jessica.phantommask.model.PharmacyRs;
 
@@ -26,4 +27,6 @@ public interface PharmacyService {
 	 * @return 查詢資料結果
 	 */
 	PharmacyRs findPharmacyMask(Long pharmacySeqno, String sortBy);
+
+	void updatePharmacyInfo(EditPharmacyNameAndPriceRq request);
 }

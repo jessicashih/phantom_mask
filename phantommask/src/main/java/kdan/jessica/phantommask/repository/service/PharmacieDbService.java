@@ -25,6 +25,9 @@ public class PharmacieDbService {
 	public Optional<Pharmacy> findById(Long id){
 		return dao.findById(id);
 	}
+	public Pharmacy update(Pharmacy pharmacy){
+		return  dao.save(pharmacy);
+	}
 
 	/**
 	 * 查詢某一日期時間有開店的藥局

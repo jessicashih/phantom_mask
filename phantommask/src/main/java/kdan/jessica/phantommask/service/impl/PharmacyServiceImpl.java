@@ -2,28 +2,28 @@ package kdan.jessica.phantommask.service.impl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import kdan.jessica.phantommask.model.MaskRs;
+import kdan.jessica.phantommask.model.*;
 import kdan.jessica.phantommask.repository.dao.MaskPriceRecordsDao;
 import kdan.jessica.phantommask.repository.entity.Mask;
 import kdan.jessica.phantommask.repository.entity.MaskPriceRecords;
 import kdan.jessica.phantommask.repository.service.MaskDbService;
 import kdan.jessica.phantommask.repository.service.MaskPriceRecordsDbService;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import kdan.jessica.phantommask.model.FindOpenPharmaciesRs;
-import kdan.jessica.phantommask.model.PharmacyRs;
-import kdan.jessica.phantommask.repository.dao.MaskDao;
-import kdan.jessica.phantommask.repository.dao.PharmacyDao;
 import kdan.jessica.phantommask.repository.entity.Pharmacy;
 import kdan.jessica.phantommask.repository.service.PharmacieDbService;
 import kdan.jessica.phantommask.service.PharmacyService;
 import kdan.jessica.phantommask.service.ex.DataNotFoundException;
 import kdan.jessica.phantommask.service.ex.RequestInputException;
+import org.springframework.util.CollectionUtils;
 
 @Service
 public class PharmacyServiceImpl implements PharmacyService{
@@ -36,6 +36,8 @@ public class PharmacyServiceImpl implements PharmacyService{
 
 	@Autowired
 	private MaskPriceRecordsDbService priceRecordsDbService;
+
+
 
 	@Override
 	public FindOpenPharmaciesRs findOpenPharmaciesAtCertainDateTime(String dateTimeStr) {
@@ -122,8 +124,68 @@ public class PharmacyServiceImpl implements PharmacyService{
 		return response;
 	}
 
+	@Override
+	public void updatePharmacyInfo(EditPharmacyNameAndPriceRq request){
+//		1.Verify input
+		verifyEditRequest(request);
+
+//		2. If pharmacyName exist update pharmacy.name
+		if(StringUtils.isNoneBlank(request.getPharmacyName())){
+			updatePharmacyName(request.getPharmacySeqno(),request.getPharmacyName());
+		}
+
+//		3. if maskPrices not empty update mask_price_record
+		if(!CollectionUtils.isEmpty(request.getMaskPrices())){
+			updateMaskPrice(request.getPharmacySeqno(),request.getMaskPrices());
+		}
+	}
+
+	private void updateMaskPrice(Long pharmacySeqno, List<MaskPirceEditRq> maskPrices) {
+		LocalDateTime now = LocalDateTime.now();
+//		3.1 check itemNo is exist
+		List<MaskPriceRecords> updateDatas = new ArrayList<>();
+		for (MaskPirceEditRq updatePrice :maskPrices) {
+			Optional<MaskPriceRecords> result=priceRecordsDbService.findByItemNoAndPharmacy(updatePrice.getItemNo(), pharmacySeqno);
+			MaskPriceRecords updateData = result
+					.orElseThrow(()->new DataNotFoundException("Not Found with Mask item_no with pharmacySeqNp"));
+			updateData.setIsDelete(true);
+			updateData.setUpdateDate(now.toLocalDate());
+			updateData.setUpdateTime(now.toLocalTime());
+			updateDatas.add(updateData);
+			MaskPriceRecords insertData = new MaskPriceRecords();
+			insertData.setItemNo(updatePrice.getItemNo());
+			insertData.setPharmacySeqno(pharmacySeqno);
+			insertData.setPrice(updatePrice.getPrice());
+			insertData.setCreateDate(now.toLocalDate());
+			insertData.setCreateTime(now.toLocalTime());
+			updateDatas.add(insertData);
+		}
+		priceRecordsDbService.updateAll(updateDatas);
+	}
+
+	private void updatePharmacyName(Long pharmacySeqno,String pharmacyName) {
+		Optional<Pharmacy> result = dbService.findById(pharmacySeqno);
+		Pharmacy pharmacy = result.orElseThrow(()-> new DataNotFoundException("Pharmacy not found, check your input seqno"));
+		pharmacy.setName(pharmacyName);
+		dbService.update(pharmacy);
+	}
+
 	private List<MaskRs> sortByName(List<MaskRs> maskRsList){
 		return maskRsList.stream().sorted(Comparator.comparing(MaskRs::getName)).collect(Collectors.toList());
+	}
+
+	private void verifyEditRequest(EditPharmacyNameAndPriceRq request){
+		if(ObjectUtils.isEmpty(request.getPharmacySeqno())){
+			throw new RequestInputException("You must input pharmacy seqNo");
+		}
+
+		if(!CollectionUtils.isEmpty(request.getMaskPrices())){
+			for (MaskPirceEditRq maskPrice:request.getMaskPrices()) {
+				if(ObjectUtils.isEmpty(maskPrice.getItemNo())){
+					throw new RequestInputException("You must input Mask item_no");
+				}
+			}
+		}
 	}
 
 	private List<MaskRs> sortByPrice(List<MaskRs> maskRsList){

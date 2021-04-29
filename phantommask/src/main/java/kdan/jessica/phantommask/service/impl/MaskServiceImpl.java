@@ -4,10 +4,13 @@ import kdan.jessica.phantommask.model.TransactionRepostRs;
 import kdan.jessica.phantommask.model.MaskAmountDetail;
 import kdan.jessica.phantommask.model.MaskRs;
 import kdan.jessica.phantommask.model.PharmacyRs;
+import kdan.jessica.phantommask.repository.entity.Mask;
 import kdan.jessica.phantommask.repository.relation.PharmacyPriceMaskRelation;
 import kdan.jessica.phantommask.repository.relation.TransactionReport;
+import kdan.jessica.phantommask.repository.service.MaskDbService;
 import kdan.jessica.phantommask.repository.service.MaskPriceRecordsDbService;
 import kdan.jessica.phantommask.service.MaskService;
+import kdan.jessica.phantommask.service.ex.DataNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +19,13 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Slf4j
 public class MaskServiceImpl implements MaskService {
-
+    @Autowired
+    private MaskDbService dbService;
     @Autowired
     private MaskPriceRecordsDbService priceRecordService;
 
@@ -107,6 +108,15 @@ public class MaskServiceImpl implements MaskService {
         response.setTotalAmountOfDollarValue(totalAmountOfDollarValue);
         response.setDetail(maskAmountDetails);
         return response;
+    }
+
+    @Override
+    public void updateName(Long itemNo,String itemName){
+        Optional<Mask> result=dbService.findById(itemNo);
+        Mask mask = result
+                .orElseThrow(()-> new DataNotFoundException("Can't find mask data with itemNo, please check the itemNo is correct."));
+        mask.setName(itemName);
+        dbService.update(mask);
     }
 
     private MaskRs convertMaskRs(PharmacyPriceMaskRelation result) {
