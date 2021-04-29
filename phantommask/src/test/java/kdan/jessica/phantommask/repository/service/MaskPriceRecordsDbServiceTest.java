@@ -2,14 +2,17 @@ package kdan.jessica.phantommask.repository.service;
 
 import kdan.jessica.phantommask.repository.entity.MaskPriceRecords;
 import kdan.jessica.phantommask.repository.relation.PharmacyPriceMaskRelation;
+import kdan.jessica.phantommask.repository.relation.TransactionReport;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class MaskPriceRecordsDbServiceTest {
@@ -32,4 +35,12 @@ public class MaskPriceRecordsDbServiceTest {
         assertEquals("Neighbors",result.get(0).getPharmacyName(),"Pharmacy name not match");
     }
 
+    @Test
+    public void findTotalTransaction(){
+        LocalDate startDate = LocalDate.of(2021,01,01);
+        LocalDate endDate = LocalDate.of(2021,04,30);
+        List<TransactionReport> result = dbService.findTotalTransaction(startDate, endDate);
+        assertEquals(2,result.get(0).getAmountOfItem());
+        assertTrue(new BigDecimal("18.52").compareTo(result.get(0).getAmountOfDollar())==0);
+    }
 }

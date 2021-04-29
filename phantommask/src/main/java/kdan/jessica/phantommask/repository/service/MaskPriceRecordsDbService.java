@@ -3,6 +3,7 @@ package kdan.jessica.phantommask.repository.service;
 import kdan.jessica.phantommask.repository.dao.MaskPriceRecordsDao;
 import kdan.jessica.phantommask.repository.entity.MaskPriceRecords;
 import kdan.jessica.phantommask.repository.relation.PharmacyPriceMaskRelation;
+import kdan.jessica.phantommask.repository.relation.TransactionReport;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -16,6 +17,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,6 +84,32 @@ public class MaskPriceRecordsDbService {
         }else{
             query = em.createNativeQuery(sql, PharmacyPriceMaskRelation.class);
         }
+        return query.getResultList();
+    }
+
+    public List<TransactionReport> findTotalTransaction(LocalDate startDate, LocalDate endDate){
+        // 查詢條件
+        String sql ="Select  " +
+                "       UUID() as uuid, " +
+                "       mpr.item_no as item_no, " +
+                "       m.name as item_name, " +
+                "       m.color as item_color, " +
+                "       m.num_of_pack as item_num_of_pack, " +
+                "       count(mpr.item_no) as amount_of_item, " +
+                "       sum(mpr.price) as amount_of_dollar "+
+                "From " +
+                "        purchase_record  as pc " +
+                "left join " +
+                "        mask_price_records as mpr on mpr.seq_no=pc.price_record " +
+                "left join " +
+                "        mask as m on mpr.item_no = m.item_no " +
+                "where  " +
+                "        pc.create_date between ?1 and ?2 " +
+                "group by " +
+                "        mpr.item_no " ;
+        Query query= em.createNativeQuery(sql, TransactionReport.class);
+        query.setParameter(1, startDate);
+        query.setParameter(2, endDate);
         return query.getResultList();
     }
 }

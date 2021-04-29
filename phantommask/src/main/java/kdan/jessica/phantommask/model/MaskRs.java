@@ -15,7 +15,7 @@ public class MaskRs {
 	private String name;
 	private String color;
 	private String numOfPack;
-	private BigDecimal price;;
+	private BigDecimal price;
 
 	public void setNumOfPack(int numOfPack) {
 		this.numOfPack = numOfPack+" pre pack";

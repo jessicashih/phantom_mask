@@ -21,4 +21,10 @@ public class MaskController extends  BaseController{
         return new JsonResult<>(SUCCESS,response);
     }
 
+    @GetMapping(path = "/v1/totalReport")
+    public JsonResult<TransactionRepostRs> findTotalTransaction(TransactionReportRq request){
+        TransactionRepostRs response = maskService.findTotalTransaction(request.getStartDate(),request.getEndDate());
+        return new JsonResult<>(SUCCESS,response);
+    }
+
 }
