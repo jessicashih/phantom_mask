@@ -31,6 +31,7 @@ public class MaskPriceRecordsDbService {
     private EntityManager em;
 
     public Optional<MaskPriceRecords> findById(Long seqno){ return dao.findById(seqno);}
+    public MaskPriceRecords update(MaskPriceRecords updateData){return dao.save(updateData);}
     public List<MaskPriceRecords> updateAll(List<MaskPriceRecords> updateDatas){
         return  dao.saveAll(updateDatas);
     }

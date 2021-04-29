@@ -36,4 +36,10 @@ public class PharmacyController extends BaseController{
 		pharamacyService.updatePharmacyInfo(request);
 		return new JsonResult<>(SUCCESS);
 	}
+
+	@DeleteMapping(path="/v1/deleteItem")
+	public JsonResult<Void> deleteItemFromPharmacy(@RequestBody DeleteItemRq request){
+		pharamacyService.deleteItemFromPharmacy(request.getItemNo(),request.getPharmacySeqno());
+		return new JsonResult<>(SUCCESS);
+	}
 }

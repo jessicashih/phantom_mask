@@ -29,4 +29,6 @@ public interface PharmacyService {
 	PharmacyRs findPharmacyMask(Long pharmacySeqno, String sortBy);
 
 	void updatePharmacyInfo(EditPharmacyNameAndPriceRq request);
+
+	void deleteItemFromPharmacy(Long itemNo, Long pharmacySeqno);
 }

@@ -109,4 +109,9 @@ public class PharmacyServiceTest {
         assertTrue(afterUpdateData.get().getIsDelete());
     }
 
+    @Test
+    public void deleteItem(){
+        service.deleteItemFromPharmacy(1L,1L);
+    }
+
 }
