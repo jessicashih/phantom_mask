@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/purchases")
-public class PurchasesController extends BaseController{
+@RequestMapping(path = "/transaction")
+public class TransactionController extends BaseController{
 
     @Autowired
     private PurchasesService service;
 
-    @PostMapping(path="/v1/transaction")
+    @PostMapping(path="/v1/purchases")
     public JsonResult<PurchasesRs> purchasesTransaction(@RequestBody PurchasesRq request) {
         String transactionId=service.purchasesTransaction(request.getPharmacySeqNo(), request.getCustomerId(), request.getItemNo());
         return new JsonResult<>(SUCCESS,new PurchasesRs(transactionId));
