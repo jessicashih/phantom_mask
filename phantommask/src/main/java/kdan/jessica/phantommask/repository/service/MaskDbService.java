@@ -23,6 +23,7 @@ public class MaskDbService {
 
     public Optional<Mask> findById(Long itemNo){return  dao.findById(itemNo);}
     public Mask update(Mask mask){return dao.save(mask);}
+    public List<Mask> findAll(){return dao.findAll();}
 
     public List<Mask> findByItemNoIn(List<Long> itemNos){
         Specification<Mask> specification = new Specification<>() {

@@ -1,10 +1,13 @@
 package kdan.jessica.phantommask.controller;
 
 import kdan.jessica.phantommask.model.*;
+import kdan.jessica.phantommask.service.SearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import kdan.jessica.phantommask.service.PharmacyService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/pharmacy")
@@ -12,6 +15,8 @@ public class PharmacyController extends BaseController{
 
 	@Autowired
 	private PharmacyService pharamacyService;
+	@Autowired
+	private SearchService searchService;
 
 	@GetMapping(path = "/v1/open/dateTime")
 	public JsonResult<FindOpenPharmaciesRs> findOpenPharmaciesAtCertainDateTime(FindOpenPharmaciesRq request) {
@@ -41,5 +46,11 @@ public class PharmacyController extends BaseController{
 	public JsonResult<Void> deleteItemFromPharmacy(@RequestBody DeleteItemRq request){
 		pharamacyService.deleteItemFromPharmacy(request.getItemNo(),request.getPharmacySeqno());
 		return new JsonResult<>(SUCCESS);
+	}
+
+	@GetMapping(path = "v1/search")
+	public JsonResult<List<PharmacyRs>> search(@RequestParam String searchName){
+		SearchRs response = searchService.search(searchName);
+		return new JsonResult<>(SUCCESS,response.getPharmacyRsList());
 	}
 }

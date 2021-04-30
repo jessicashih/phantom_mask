@@ -11,9 +11,7 @@ import lombok.Data;
 public class PharmacyRs {
 	
 	private Long seqNo;
-
 	private String name;
-
-	private List<MaskRs> masks; 
+	private List<MaskRs> masks;
 	
 }

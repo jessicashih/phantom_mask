@@ -28,7 +28,7 @@ public class PharmacieDbService {
 	public Pharmacy update(Pharmacy pharmacy){
 		return  dao.save(pharmacy);
 	}
-
+	public List<Pharmacy> findAll(){return dao.findAll();}
 	/**
 	 * 查詢某一日期時間有開店的藥局
 	 * @param dayOfWeek 星期幾
