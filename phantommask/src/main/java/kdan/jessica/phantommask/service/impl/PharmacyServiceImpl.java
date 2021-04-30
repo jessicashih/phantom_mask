@@ -26,7 +26,7 @@ import kdan.jessica.phantommask.repository.entity.MaskPriceRecords;
 import kdan.jessica.phantommask.repository.entity.Pharmacy;
 import kdan.jessica.phantommask.repository.service.MaskDbService;
 import kdan.jessica.phantommask.repository.service.MaskPriceRecordsDbService;
-import kdan.jessica.phantommask.repository.service.PharmacieDbService;
+import kdan.jessica.phantommask.repository.service.PharmacyDbService;
 import kdan.jessica.phantommask.service.PharmacyService;
 import kdan.jessica.phantommask.service.ex.DataNotFoundException;
 import kdan.jessica.phantommask.service.ex.RequestInputException;
@@ -35,7 +35,7 @@ import kdan.jessica.phantommask.service.ex.RequestInputException;
 public class PharmacyServiceImpl implements PharmacyService {
 
 	@Autowired
-	private PharmacieDbService dbService;
+	private PharmacyDbService pharmacyDbService;
 
 	@Autowired
 	private MaskDbService maskDbService;
@@ -50,7 +50,7 @@ public class PharmacyServiceImpl implements PharmacyService {
 
 //		Query
 		LocalDateTime dateTime = LocalDateTime.parse(dateTimeStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-		List<Pharmacy> queryResult = dbService.findOpenedPharmacy(dateTime.getDayOfWeek(), dateTime.toLocalTime());
+		List<Pharmacy> queryResult = pharmacyDbService.findOpenedPharmacy(dateTime.getDayOfWeek(), dateTime.toLocalTime());
 
 //		Response
 		FindOpenPharmaciesRs response = new FindOpenPharmaciesRs();
@@ -72,7 +72,7 @@ public class PharmacyServiceImpl implements PharmacyService {
 
 //		Query
 		LocalDate dateTime = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		List<Pharmacy> queryResult = dbService.findOpenedPharmacy(dateTime.getDayOfWeek());
+		List<Pharmacy> queryResult = pharmacyDbService.findOpenedPharmacy(dateTime.getDayOfWeek());
 
 //		Response
 		FindOpenPharmaciesRs response = new FindOpenPharmaciesRs();
@@ -96,7 +96,7 @@ public class PharmacyServiceImpl implements PharmacyService {
 			throw new RequestInputException("SortBy Column must be name or price. Pleace check your input.");
 		}
 //		2. Query Pharmacy 
-		Optional<Pharmacy> pharmacyOpt = dbService.findById(pharmacySeqno);
+		Optional<Pharmacy> pharmacyOpt = pharmacyDbService.findById(pharmacySeqno);
 		Pharmacy pharmacy = pharmacyOpt.orElseThrow(() -> new DataNotFoundException("Pharmacy data is not found. Please check your input Seqno."));
 //		3. Query Mask Price Record
 		List<MaskPriceRecords> priceRecords = priceRecordsDbService.findByPharmacySeqno(List.of(pharmacy.getSeqNo()));
@@ -182,10 +182,10 @@ public class PharmacyServiceImpl implements PharmacyService {
 	}
 
 	private void updatePharmacyName(Long pharmacySeqno,String pharmacyName) {
-		Optional<Pharmacy> result = dbService.findById(pharmacySeqno);
+		Optional<Pharmacy> result = pharmacyDbService.findById(pharmacySeqno);
 		Pharmacy pharmacy = result.orElseThrow(()-> new DataNotFoundException("Pharmacy not found, check your input seqno"));
 		pharmacy.setName(pharmacyName);
-		dbService.update(pharmacy);
+		pharmacyDbService.update(pharmacy);
 	}
 
 	private List<MaskRs> sortByName(List<MaskRs> maskRsList){

@@ -6,7 +6,7 @@ import kdan.jessica.phantommask.repository.entity.Pharmacy;
 import kdan.jessica.phantommask.repository.entity.PurchaseRecord;
 import kdan.jessica.phantommask.repository.service.CustomerDbService;
 import kdan.jessica.phantommask.repository.service.MaskPriceRecordsDbService;
-import kdan.jessica.phantommask.repository.service.PharmacieDbService;
+import kdan.jessica.phantommask.repository.service.PharmacyDbService;
 import kdan.jessica.phantommask.repository.service.PurchaseRecordDbService;
 import kdan.jessica.phantommask.service.PurchasesService;
 import kdan.jessica.phantommask.service.ex.BalanceNotEnough;
@@ -23,7 +23,7 @@ import java.math.BigDecimal;
 public class PurchasesServiceImpl implements PurchasesService {
 
     @Autowired
-    private PharmacieDbService pharmacieDbService;
+    private PharmacyDbService pharmacyDbService;
 
     @Autowired
     private CustomerDbService customerDbService;
@@ -60,7 +60,7 @@ public class PurchasesServiceImpl implements PurchasesService {
             customer.setBalance(balanceAfterCharge);
         }
 //        4. Increase the balance of Pharmacy
-        Pharmacy pharmacy = pharmacieDbService.findById(pharmacySeqNo)
+        Pharmacy pharmacy = pharmacyDbService.findById(pharmacySeqNo)
                 .orElseThrow(() -> new DataNotFoundException("The pharmacy is not exist, please check input data."));
         log.debug("Pharmacy balance before charge: {}",customer.getBalance());
         BigDecimal balanceAfterTransaction = pharmacy.getBalance().add(price);

@@ -6,10 +6,8 @@ import kdan.jessica.phantommask.repository.entity.Mask;
 import kdan.jessica.phantommask.repository.entity.Pharmacy;
 import kdan.jessica.phantommask.model.SearchRs;
 import kdan.jessica.phantommask.repository.service.MaskDbService;
-import kdan.jessica.phantommask.repository.service.PharmacieDbService;
+import kdan.jessica.phantommask.repository.service.PharmacyDbService;
 import kdan.jessica.phantommask.service.SearchService;
-import kdan.jessica.phantommask.service.ex.RequestInputException;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +17,7 @@ import java.util.stream.Collectors;
 @Service
 public class SearchServiceImpl implements SearchService {
     @Autowired
-    private PharmacieDbService pharmacieDbService;
+    private PharmacyDbService pharmacyDbService;
     @Autowired
     private MaskDbService maskDbService;
 
@@ -27,7 +25,7 @@ public class SearchServiceImpl implements SearchService {
     public SearchRs search(String searchString) {
 
 
-        List<Pharmacy> allPharmacy = pharmacieDbService.findAll();
+        List<Pharmacy> allPharmacy = pharmacyDbService.findAll();
         List<Mask> allMask = maskDbService.findAll();
 
         List<Pharmacy> filterAndSortPharmacy = allPharmacy.stream()

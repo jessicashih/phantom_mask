@@ -6,7 +6,7 @@ import kdan.jessica.phantommask.repository.entity.Pharmacy;
 import kdan.jessica.phantommask.repository.entity.PurchaseRecord;
 import kdan.jessica.phantommask.repository.service.CustomerDbService;
 import kdan.jessica.phantommask.repository.service.MaskPriceRecordsDbService;
-import kdan.jessica.phantommask.repository.service.PharmacieDbService;
+import kdan.jessica.phantommask.repository.service.PharmacyDbService;
 import kdan.jessica.phantommask.repository.service.PurchaseRecordDbService;
 import kdan.jessica.phantommask.service.ex.DataNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ public class PurchasesServiceTest {
     private PurchasesService service;
 
     @Autowired
-    private PharmacieDbService pharmacieDbService;
+    private PharmacyDbService pharmacyDbService;
 
     @Autowired
     private CustomerDbService customerDbService;
@@ -43,7 +43,7 @@ public class PurchasesServiceTest {
         Long itemNo = 1L;
         Customer customerB = customerDbService.findById(customerId).orElseThrow(() -> new DataNotFoundException());
         BigDecimal customerBalanceBefore = customerB.getBalance();
-        Pharmacy pharmacyB = pharmacieDbService.findById(pharmacySeqno).orElseThrow(() -> new DataNotFoundException());
+        Pharmacy pharmacyB = pharmacyDbService.findById(pharmacySeqno).orElseThrow(() -> new DataNotFoundException());
         BigDecimal pharmacyBalanceBefore = pharmacyB.getBalance();
         MaskPriceRecords priceRecords = priceRecordsDbService.findByItemNoAndPharmacy(itemNo, pharmacySeqno).orElseThrow(()->new DataNotFoundException());
         BigDecimal price = priceRecords.getPrice();
@@ -54,7 +54,7 @@ public class PurchasesServiceTest {
 
         Customer customerA = customerDbService.findById(customerId).orElseThrow(() -> new DataNotFoundException());
         BigDecimal customerBalanceAfter = customerA.getBalance();
-        Pharmacy pharmacy = pharmacieDbService.findById(pharmacySeqno).orElseThrow(() -> new DataNotFoundException());
+        Pharmacy pharmacy = pharmacyDbService.findById(pharmacySeqno).orElseThrow(() -> new DataNotFoundException());
         BigDecimal pharmacyBalanceAfter = pharmacy.getBalance();
         List<PurchaseRecord> purchaseRecordAfter = purchaseRecordDbService.findAll();
 

@@ -14,10 +14,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import kdan.jessica.phantommask.repository.entity.Pharmacy;
 
 @SpringBootTest
-public class PharmacieDbServiceTest {
+public class PharmacyDbServiceTest {
 
 	@Autowired
-	private PharmacieDbService dbService;
+	private PharmacyDbService dbService;
 
 	@Test
 	public void testOpenAtCertionDateTime() {

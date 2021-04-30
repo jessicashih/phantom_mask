@@ -80,7 +80,7 @@ public class MaskPriceRecordsDbService {
                         "        m.num_of_pack as mask_num_of_pack," +
                         "        mpr.price as mask_price " +
                         "FROM " +
-                        "        pharmacie as p " +
+                        "        pharmacy as p " +
                         "left join" +
                         "        mask_price_records as mpr on mpr.pharmacy_seqno = p.seq_no " +
                         "left join" +

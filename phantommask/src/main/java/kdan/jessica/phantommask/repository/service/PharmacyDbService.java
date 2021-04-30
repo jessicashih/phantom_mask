@@ -18,7 +18,7 @@ import kdan.jessica.phantommask.repository.dao.PharmacyDao;
 import kdan.jessica.phantommask.repository.entity.Pharmacy;
 
 @Service
-public class PharmacieDbService {
+public class PharmacyDbService {
 	@Autowired
 	private PharmacyDao dao;
 
