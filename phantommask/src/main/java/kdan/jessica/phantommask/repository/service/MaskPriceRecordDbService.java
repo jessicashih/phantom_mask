@@ -1,20 +1,22 @@
 package kdan.jessica.phantommask.repository.service;
 
-import kdan.jessica.phantommask.repository.dao.MaskPriceRecordDao;
-import kdan.jessica.phantommask.repository.entity.MaskPriceRecord;
-import kdan.jessica.phantommask.repository.ex.DataException;
-import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+
+import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+
+import kdan.jessica.phantommask.repository.dao.MaskPriceRecordDao;
+import kdan.jessica.phantommask.repository.entity.MaskPriceRecord;
+import kdan.jessica.phantommask.repository.ex.DataException;
 
 /**
  * Mask_Price_Record DB Service
@@ -34,6 +36,14 @@ public class MaskPriceRecordDbService {
             return maskPriceRecordDao.save(priceRecord);
         } else {
             throw new DataException("The Data is not exist, please use insert");
+        }
+    }
+    public MaskPriceRecord insert(MaskPriceRecord priceRecord) {
+        Long id = priceRecord.getSeqNo();
+        if (ObjectUtils.isNotEmpty(id) && maskPriceRecordDao.existsById(id)) {
+            throw new DataException("The Data is exist, please use update");
+        } else {
+            return maskPriceRecordDao.save(priceRecord);
         }
     }
 

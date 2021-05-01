@@ -1,5 +1,14 @@
 package kdan.jessica.phantommask.service.impl;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import kdan.jessica.phantommask.model.MaskRs;
 import kdan.jessica.phantommask.model.PharmacyRs;
 import kdan.jessica.phantommask.model.SearchRs;
@@ -8,14 +17,8 @@ import kdan.jessica.phantommask.repository.entity.Pharmacy;
 import kdan.jessica.phantommask.repository.service.MaskDbService;
 import kdan.jessica.phantommask.repository.service.PharmacyDbService;
 import kdan.jessica.phantommask.service.SearchService;
+import kdan.jessica.phantommask.service.ex.RequestInputException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -28,6 +31,9 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public SearchRs search(String searchString) {
         log.info("search Start");
+        if(StringUtils.isEmpty(searchString)){
+            throw new RequestInputException("searchString can't be null, Please check imput data.");
+        }
         List<Pharmacy> allPharmacy = pharmacyDbService.findAll();
         List<Mask> allMask = maskDbService.findAll();
 

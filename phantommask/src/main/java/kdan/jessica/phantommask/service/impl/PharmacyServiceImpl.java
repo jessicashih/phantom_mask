@@ -1,6 +1,27 @@
 package kdan.jessica.phantommask.service.impl;
 
-import kdan.jessica.phantommask.model.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+
+import kdan.jessica.phantommask.model.EditPharmacyNameAndPriceRq;
+import kdan.jessica.phantommask.model.FindOpenPharmaciesRs;
+import kdan.jessica.phantommask.model.MaskPirceEditRq;
+import kdan.jessica.phantommask.model.MaskRs;
+import kdan.jessica.phantommask.model.PharmacyRs;
 import kdan.jessica.phantommask.repository.entity.Mask;
 import kdan.jessica.phantommask.repository.entity.MaskPriceRecord;
 import kdan.jessica.phantommask.repository.entity.Pharmacy;
@@ -11,17 +32,6 @@ import kdan.jessica.phantommask.service.PharmacyService;
 import kdan.jessica.phantommask.service.ex.DataNotFoundException;
 import kdan.jessica.phantommask.service.ex.RequestInputException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -43,7 +53,12 @@ public class PharmacyServiceImpl implements PharmacyService {
         log.info("Query Date Time:{}", dateTimeStr);
 
 //		Query
-        LocalDateTime dateTime = LocalDateTime.parse(dateTimeStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        LocalDateTime dateTime;
+        if (StringUtils.isBlank(dateTimeStr)) {
+            dateTime = LocalDateTime.now();
+        } else {
+            dateTime = LocalDateTime.parse(dateTimeStr, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        }
         List<Pharmacy> queryResult = pharmacyDbService.findOpenedPharmacy(dateTime.getDayOfWeek(), dateTime.toLocalTime());
 
 //		Response
@@ -66,8 +81,13 @@ public class PharmacyServiceImpl implements PharmacyService {
         log.info("Query Date Time:{}", dateStr);
 
 //		Query
-        LocalDate dateTime = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        List<Pharmacy> queryResult = pharmacyDbService.findOpenedPharmacy(dateTime.getDayOfWeek());
+        LocalDate date;
+        if (StringUtils.isBlank(dateStr)) {
+            date = LocalDate.now();
+        } else {
+            date = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        }
+        List<Pharmacy> queryResult = pharmacyDbService.findOpenedPharmacy(date.getDayOfWeek());
 
 //		Response
         FindOpenPharmaciesRs response = new FindOpenPharmaciesRs();
@@ -90,7 +110,10 @@ public class PharmacyServiceImpl implements PharmacyService {
         log.info("pharmacySeqno:{}, sortBy:{}", pharmacySeqno, sortBy);
 //		1.Check Input Data
         if (!"name".equals(sortBy) && !"price".equals(sortBy)) {
-            throw new RequestInputException("SortBy Column must be name or price. Pleace check your input.");
+            throw new RequestInputException("SortBy Column must be name or price. Please check your input.");
+        }
+        if (ObjectUtils.isEmpty(pharmacySeqno)){
+            throw new RequestInputException("PharmacySeqno can't be null. Please check your input.");
         }
 //		2. Query Pharmacy 
         Optional<Pharmacy> pharmacyOpt = pharmacyDbService.findById(pharmacySeqno);
@@ -126,7 +149,7 @@ public class PharmacyServiceImpl implements PharmacyService {
         log.info("findPharmacyMask End");
         return response;
     }
-
+    @Transactional
     @Override
     public void updatePharmacyInfo(EditPharmacyNameAndPriceRq request) {
         log.info("updatePharmacyInfo Start");
@@ -148,6 +171,13 @@ public class PharmacyServiceImpl implements PharmacyService {
     @Override
     public void deleteItemFromPharmacy(Long itemNo, Long pharmacySeqno) {
         log.info("deleteItemFromPharmacy Start");
+//        1.validate input
+        if(ObjectUtils.isEmpty(itemNo)){
+            throw new RequestInputException("Item_no can't be null. Please check your input.");
+        }
+        if (ObjectUtils.isEmpty(pharmacySeqno)){
+            throw new RequestInputException("Pharmacy_Seqno can't be null. Please check your input.");
+        }
         LocalDateTime now = LocalDateTime.now();
         Optional<MaskPriceRecord> result = priceRecordsDbService.findByItemNoAndPharmacy(itemNo, pharmacySeqno);
         MaskPriceRecord updateData = result
@@ -159,11 +189,9 @@ public class PharmacyServiceImpl implements PharmacyService {
         log.info("deleteItemFromPharmacy End");
     }
 
-
     private void updateMaskPrice(Long pharmacySeqno, List<MaskPirceEditRq> maskPrices) {
         LocalDateTime now = LocalDateTime.now();
 //		3.1 check itemNo is exist
-        List<MaskPriceRecord> updateDatas = new ArrayList<>();
         for (MaskPirceEditRq updatePrice : maskPrices) {
             Optional<MaskPriceRecord> result = priceRecordsDbService.findByItemNoAndPharmacy(updatePrice.getItemNo(), pharmacySeqno);
             MaskPriceRecord updateData = result
@@ -171,16 +199,15 @@ public class PharmacyServiceImpl implements PharmacyService {
             updateData.setIsDelete(true);
             updateData.setUpdateDate(now.toLocalDate());
             updateData.setUpdateTime(now.toLocalTime());
-            updateDatas.add(updateData);
+            priceRecordsDbService.update(updateData);
             MaskPriceRecord insertData = new MaskPriceRecord();
             insertData.setItemNo(updatePrice.getItemNo());
             insertData.setPharmacySeqno(pharmacySeqno);
             insertData.setPrice(updatePrice.getPrice());
             insertData.setCreateDate(now.toLocalDate());
             insertData.setCreateTime(now.toLocalTime());
-            updateDatas.add(insertData);
+            priceRecordsDbService.insert(insertData);
         }
-        priceRecordsDbService.updateAll(updateDatas);
     }
 
     private void updatePharmacyName(Long pharmacySeqno, String pharmacyName) {
