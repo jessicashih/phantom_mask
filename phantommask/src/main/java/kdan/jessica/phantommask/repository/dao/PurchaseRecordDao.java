@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import kdan.jessica.phantommask.repository.entity.PurchaseRecord;
 
 @Repository
-public interface PurchaseRecordDao extends JpaRepository<PurchaseRecord, Long>, JpaSpecificationExecutor<PurchaseRecord> {
+public interface PurchaseRecordDao extends JpaRepository<PurchaseRecord, String>, JpaSpecificationExecutor<PurchaseRecord> {
 
 }

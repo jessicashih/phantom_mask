@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -15,9 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import kdan.jessica.phantommask.repository.entity.Pharmacy;
+import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Pharmacy Dao CRUD test
+ */
 @SpringBootTest
 @TestMethodOrder(OrderAnnotation.class)
+@Transactional
 public class PharmacyDaoTest {
 
 	@Autowired
@@ -58,8 +64,14 @@ public class PharmacyDaoTest {
 	@Test
 	@Order(2)
 	public void testQuery() {
-		List<Pharmacy> result =dao.findAll();
-		assertEquals(1, result.size(),"dao didn't delete data");
+		String pharmacyName= "Neighbors";
+		Pharmacy pharmacy = new Pharmacy();
+		pharmacy.setName(pharmacyName);
+		pharmacy.setBalance(new BigDecimal("151.65"));
+		Pharmacy insertData =dao.save(pharmacy);
+		Optional<Pharmacy> result = dao.findById(insertData.getSeqNo());
+		assertNotNull(result.get());
+		assertEquals(pharmacyName, result.get().getName(),"dao didn't delete data");
 	}
 	
 	@Test

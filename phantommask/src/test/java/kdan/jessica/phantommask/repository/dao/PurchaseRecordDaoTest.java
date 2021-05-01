@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -16,9 +17,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import kdan.jessica.phantommask.repository.entity.PurchaseRecord;
+import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Purchase_Record Dao CRUD test
+ */
 @SpringBootTest
 @TestMethodOrder(OrderAnnotation.class)
+@Transactional
 public class PurchaseRecordDaoTest {
 	@Autowired
 	private PurchaseRecordDao dao;
@@ -39,8 +45,16 @@ public class PurchaseRecordDaoTest {
 	@Test
 	@Order(2)
 	public void testQuery() {
-		List<PurchaseRecord> result =dao.findAll();
-		assertEquals(1, result.size(),"dao didn't delete data");
+		PurchaseRecord record = new PurchaseRecord();
+		record.setCustomerId(1L);
+		record.setPriceRecord(2L);
+		record.setUuid(UUID.randomUUID().toString());
+		record.setCreateDate(LocalDate.now());
+		record.setCreateTime(LocalTime.now());
+		PurchaseRecord insertData =dao.save(record);
+		Optional<PurchaseRecord> result =dao.findById(insertData.getUuid());
+		assertNotNull(result.get());
+		assertEquals(1, result.get().getCustomerId(),"dao didn't delete data");
 	}
 	
 	@Test

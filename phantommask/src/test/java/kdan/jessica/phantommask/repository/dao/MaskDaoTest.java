@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -13,9 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import kdan.jessica.phantommask.repository.entity.Mask;
+import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Mask Dao CRUD test
+ */
 @SpringBootTest
 @TestMethodOrder(OrderAnnotation.class)
+@Transactional
 public class MaskDaoTest {
 
 	@Autowired
@@ -35,8 +41,15 @@ public class MaskDaoTest {
 	@Test
 	@Order(2)
 	public void testQuery() {
-		List<Mask> result =dao.findAll();
-		assertEquals(1, result.size(),"dao didn't delete data");
+		String maskName = "Masquerade";
+		Mask mask = new Mask();
+		mask.setName(maskName);
+		mask.setColor("black");
+		mask.setNumOfPack(3);
+		Mask insertData =dao.save(mask);
+		Optional<Mask> result =dao.findById(insertData.getItemNo());
+		assertNotNull(result.get());
+		assertEquals(maskName, result.get().getName(),"dao didn't delete data");
 	}
 	
 	@Test

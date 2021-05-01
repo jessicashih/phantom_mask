@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -17,9 +18,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import kdan.jessica.phantommask.repository.entity.MaskPriceRecord;
+import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Mask_Price_Record Dao CRUD test
+ */
 @SpringBootTest
 @TestMethodOrder(OrderAnnotation.class)
+@Transactional
 public class MaskPriceRecordDaoTest {
 
 	@Autowired
@@ -41,8 +47,16 @@ public class MaskPriceRecordDaoTest {
 	@Test
 	@Order(2)
 	public void testQuery() {
-		List<MaskPriceRecord> result = dao.findAll();
-		assertEquals(1, result.size(), "dao didn't delete data");
+		MaskPriceRecord maskPriceRecord = new MaskPriceRecord();
+		maskPriceRecord.setItemNo(2L);
+		maskPriceRecord.setPharmacySeqno(1L);
+		maskPriceRecord.setPrice(new BigDecimal("14.18"));
+		maskPriceRecord.setCreateDate(LocalDate.now());
+		maskPriceRecord.setCreateTime(LocalTime.now());
+		MaskPriceRecord insertData = dao.save(maskPriceRecord);
+		Optional<MaskPriceRecord> result = dao.findById(insertData.getSeqNo());
+		assertNotNull(result.get());
+		assertEquals(insertData.getSeqNo(), result.get().getSeqNo(), "dao didn't delete data");
 	}
 
 	@Test
