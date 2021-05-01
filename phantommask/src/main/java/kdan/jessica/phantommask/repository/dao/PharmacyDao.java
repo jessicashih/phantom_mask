@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import kdan.jessica.phantommask.repository.entity.Pharmacy;
 
 @Repository
-public interface PharmacyDao extends JpaRepository<Pharmacy, Long>, JpaSpecificationExecutor<Pharmacy>{
+public interface PharmacyDao extends BaseDao<Pharmacy, Long>{
 	
 }

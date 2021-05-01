@@ -1,4 +1,4 @@
-package kdan.jessica.phantommask.repository.relation;
+package kdan.jessica.phantommask.repository.entity.relation;
 
 import lombok.Data;
 

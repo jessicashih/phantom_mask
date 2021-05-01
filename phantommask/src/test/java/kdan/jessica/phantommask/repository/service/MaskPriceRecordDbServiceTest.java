@@ -1,8 +1,8 @@
 package kdan.jessica.phantommask.repository.service;
 
 import kdan.jessica.phantommask.repository.entity.MaskPriceRecord;
-import kdan.jessica.phantommask.repository.relation.PharmacyPriceMaskRelation;
-import kdan.jessica.phantommask.repository.relation.TransactionReport;
+import kdan.jessica.phantommask.repository.entity.relation.PharmacyPriceMaskRelation;
+import kdan.jessica.phantommask.repository.entity.relation.TransactionReport;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,42 +14,31 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Mask_Price_Record DbService Test
+ */
 @SpringBootTest
 public class MaskPriceRecordDbServiceTest {
 
     @Autowired
     private MaskPriceRecordDbService dbService;
 
+    /**
+     * 依藥局編號查詢價格
+     */
     @Test
     public void testFindByPharmacySeqno(){
-        List<MaskPriceRecord> records =dbService.findByPharmacySeqno(List.of(1L,2L));
-        assertEquals(1,records.size(),"record size not match");
-        assertEquals(1,records.get(0).getSeqNo(),"item_seqNo not match");
+        List<MaskPriceRecord> records =dbService.findByPharmacySeqno(List.of(1L));
+        assertEquals(1,records.get(0).getSeqNo(),"mask_price_record seqno not match");
     }
-
+    /**
+     * 依照口罩編號以及藥局編號查詢價格紀錄
+     */
     @Test
-    public void testRelationQuery(){
-        List<PharmacyPriceMaskRelation> result =dbService.pharmacyRelationQuery
-                (new BigDecimal("9"),new BigDecimal("11"));
-        assertEquals(1, result.size(),"query fail");
-        assertEquals("Neighbors",result.get(0).getPharmacyName(),"Pharmacy name not match");
-    }
-
-    @Test
-    public void findTotalTransaction(){
-        LocalDate startDate = LocalDate.of(2021,01,01);
-        LocalDate endDate = LocalDate.of(2021,04,30);
-        List<TransactionReport> result = dbService.findTotalTransaction(startDate, endDate);
-        assertEquals(2,result.get(0).getAmountOfItem());
-        assertTrue(new BigDecimal("18.52").compareTo(result.get(0).getAmountOfDollar())==0);
-    }
-
-    @Test
-    public void findByItemNoAndPharmacy(){
+    public void testFindByItemNoAndPharmacy(){
         Long itemNo=1L;
         Long pharmacy=1L;
         Optional<MaskPriceRecord> result = dbService.findByItemNoAndPharmacy(itemNo, pharmacy);
-        assertNotNull(result.get());
-        assertEquals(1,result.get().getSeqNo());
+        assertEquals(1,result.get().getSeqNo(),"mask_price_record seqno not match");
     }
 }

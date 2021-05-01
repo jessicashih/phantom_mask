@@ -1,14 +1,14 @@
 package kdan.jessica.phantommask.service.impl;
 
-import kdan.jessica.phantommask.model.TransactionRepostRs;
 import kdan.jessica.phantommask.model.MaskAmountDetail;
 import kdan.jessica.phantommask.model.MaskRs;
 import kdan.jessica.phantommask.model.PharmacyRs;
+import kdan.jessica.phantommask.model.TransactionRepostRs;
 import kdan.jessica.phantommask.repository.entity.Mask;
-import kdan.jessica.phantommask.repository.relation.PharmacyPriceMaskRelation;
-import kdan.jessica.phantommask.repository.relation.TransactionReport;
+import kdan.jessica.phantommask.repository.entity.relation.PharmacyPriceMaskRelation;
+import kdan.jessica.phantommask.repository.entity.relation.TransactionReport;
 import kdan.jessica.phantommask.repository.service.MaskDbService;
-import kdan.jessica.phantommask.repository.service.MaskPriceRecordDbService;
+import kdan.jessica.phantommask.repository.service.RelationalQueryService;
 import kdan.jessica.phantommask.service.MaskService;
 import kdan.jessica.phantommask.service.ex.DataNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -27,16 +27,13 @@ public class MaskServiceImpl implements MaskService {
     @Autowired
     private MaskDbService dbService;
     @Autowired
-    private MaskPriceRecordDbService priceRecordService;
-
-    @Autowired
-    private MaskPriceRecordDbService maskPriceRecordDbService;
+    private RelationalQueryService relationalQueryService;
 
     @Override
     public List<PharmacyRs> queryMaskPrice(BigDecimal priceMoreThan,BigDecimal priceLessThan){
         log.info("MaskServiceImpl.queryMaskPrice Start");
 //       1. DB query
-        List<PharmacyPriceMaskRelation> queryResult = priceRecordService.pharmacyRelationQuery(priceMoreThan, priceLessThan);
+        List<PharmacyPriceMaskRelation> queryResult = relationalQueryService.findPharmacyWithMaskByPrice(priceMoreThan, priceLessThan);
 //       2. Convert to Response
         List<PharmacyRs> response = new ArrayList<>();
         Map<Long,List<MaskRs>> pharmacyGroup = new HashMap<>();
@@ -80,7 +77,7 @@ public class MaskServiceImpl implements MaskService {
         }
 
 //        1. Query data
-        List<TransactionReport> dbResult = maskPriceRecordDbService.findTotalTransaction(startDate, endDate);
+        List<TransactionReport> dbResult = relationalQueryService.findTotalTransaction(startDate, endDate);
 
 //        2. count total amount of masks and dollars value
         List<MaskAmountDetail> maskAmountDetails = new ArrayList<>();

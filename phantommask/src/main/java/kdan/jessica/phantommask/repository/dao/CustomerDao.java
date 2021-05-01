@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import kdan.jessica.phantommask.repository.entity.Customer;
 
 @Repository
-public interface CustomerDao extends JpaRepository<Customer, Long>, JpaSpecificationExecutor<Customer>{
+public interface CustomerDao extends BaseDao<Customer, Long>{
 
 }

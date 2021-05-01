@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import kdan.jessica.phantommask.repository.entity.MaskPriceRecord;
 
 @Repository
-public interface MaskPriceRecordDao extends JpaRepository<MaskPriceRecord, Long>, JpaSpecificationExecutor<MaskPriceRecord>{
+public interface MaskPriceRecordDao extends BaseDao<MaskPriceRecord, Long>{
 
 }

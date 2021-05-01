@@ -2,10 +2,9 @@ package kdan.jessica.phantommask.service.impl;
 
 import kdan.jessica.phantommask.model.TopUserRq;
 import kdan.jessica.phantommask.model.TopUserRs;
-import kdan.jessica.phantommask.repository.relation.TopUser;
-import kdan.jessica.phantommask.repository.service.CustomerDbService;
+import kdan.jessica.phantommask.repository.entity.relation.TopUser;
+import kdan.jessica.phantommask.repository.service.RelationalQueryService;
 import kdan.jessica.phantommask.service.CustomerService;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,13 +13,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
-    private CustomerDbService customerDbService;
+    private RelationalQueryService relationalQueryService;
 
     @Override
     public List<TopUserRs> findTopUsers(TopUserRq request){
@@ -44,7 +42,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
 
 //      3. Query DataBase
-        List<TopUser> topUserResult = customerDbService.findTopUser(startDate,endDate, top);
+        List<TopUser> topUserResult = relationalQueryService.findTopUser(startDate,endDate, top);
 
 //      4. convert to response
         List<TopUserRs> response = new ArrayList<>();

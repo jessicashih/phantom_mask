@@ -12,8 +12,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Slf4j
-@Getter
-@Setter
 public class JsonToPharmacyConvertor {
     private final String continueDayRegex ="\\w{3} - \\w{3} \\d{2}:\\d{2} - \\d{2}:\\d{2}";
     private final String twoDayRegex ="\\w{3}, \\w{3} \\d{2}:\\d{2} - \\d{2}:\\d{2}";
@@ -131,7 +129,7 @@ public class JsonToPharmacyConvertor {
                 break;
             case "Thu":
                 pharmacy.setThuOpen(open);
-                pharmacy.setTueClose(close);
+                pharmacy.setThuClose(close);
                 break;
             case "Fri":
                 pharmacy.setFriOpen(open);

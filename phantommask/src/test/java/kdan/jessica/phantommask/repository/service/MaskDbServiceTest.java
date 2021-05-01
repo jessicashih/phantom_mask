@@ -8,6 +8,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import kdan.jessica.phantommask.repository.entity.Mask;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+/**
+ * Mask DBService Test
+ */
 @SpringBootTest
 public class MaskDbServiceTest {
 	
@@ -16,11 +21,10 @@ public class MaskDbServiceTest {
 
 	@Test
 	public void testFindByIdIn() {
-		List<Long> itemNos = List.of(1L, 2L);
+		List<Long> itemNos = List.of(1L);
 		List<Mask> result = dbService.findByItemNoIn(itemNos);
 		for (Mask mask : result) {
-			System.out.println("Item_no:" + mask.getItemNo());
-			System.out.println("Name:" + mask.getName());
+			assertEquals("AniMask",mask.getName());
 		}
 	}
 

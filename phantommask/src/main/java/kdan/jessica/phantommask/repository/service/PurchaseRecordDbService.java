@@ -10,23 +10,26 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * PurchaseRecord DbService
+ */
 @Service
 public class PurchaseRecordDbService {
 
     @Autowired
-    private PurchaseRecordDao dao;
+    private PurchaseRecordDao purchaseRecordDao;
 
-    public PurchaseRecord insert(Long priceRecordSeqno,Long customerId){
-        PurchaseRecord purchaseRecord =new PurchaseRecord();
+    public PurchaseRecord insert(Long priceRecordSeqno, Long customerId) {
+        PurchaseRecord purchaseRecord = new PurchaseRecord();
         purchaseRecord.setUuid(UUID.randomUUID().toString());
         purchaseRecord.setPriceRecord(priceRecordSeqno);
         purchaseRecord.setCustomerId(customerId);
         purchaseRecord.setCreateDate(LocalDate.now());
         purchaseRecord.setCreateTime(LocalTime.now());
-        return dao.save(purchaseRecord);
+        return purchaseRecordDao.save(purchaseRecord);
     }
 
     public List<PurchaseRecord> findAll() {
-        return dao.findAll();
+        return purchaseRecordDao.findAll();
     }
 }
