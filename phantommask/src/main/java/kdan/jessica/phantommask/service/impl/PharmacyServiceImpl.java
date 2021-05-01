@@ -22,10 +22,10 @@ import kdan.jessica.phantommask.model.MaskPirceEditRq;
 import kdan.jessica.phantommask.model.MaskRs;
 import kdan.jessica.phantommask.model.PharmacyRs;
 import kdan.jessica.phantommask.repository.entity.Mask;
-import kdan.jessica.phantommask.repository.entity.MaskPriceRecords;
+import kdan.jessica.phantommask.repository.entity.MaskPriceRecord;
 import kdan.jessica.phantommask.repository.entity.Pharmacy;
 import kdan.jessica.phantommask.repository.service.MaskDbService;
-import kdan.jessica.phantommask.repository.service.MaskPriceRecordsDbService;
+import kdan.jessica.phantommask.repository.service.MaskPriceRecordDbService;
 import kdan.jessica.phantommask.repository.service.PharmacyDbService;
 import kdan.jessica.phantommask.service.PharmacyService;
 import kdan.jessica.phantommask.service.ex.DataNotFoundException;
@@ -41,7 +41,7 @@ public class PharmacyServiceImpl implements PharmacyService {
 	private MaskDbService maskDbService;
 
 	@Autowired
-	private MaskPriceRecordsDbService priceRecordsDbService;
+	private MaskPriceRecordDbService priceRecordsDbService;
 
 
 	@Override
@@ -99,7 +99,7 @@ public class PharmacyServiceImpl implements PharmacyService {
 		Optional<Pharmacy> pharmacyOpt = pharmacyDbService.findById(pharmacySeqno);
 		Pharmacy pharmacy = pharmacyOpt.orElseThrow(() -> new DataNotFoundException("Pharmacy data is not found. Please check your input Seqno."));
 //		3. Query Mask Price Record
-		List<MaskPriceRecords> priceRecords = priceRecordsDbService.findByPharmacySeqno(List.of(pharmacy.getSeqNo()));
+		List<MaskPriceRecord> priceRecords = priceRecordsDbService.findByPharmacySeqno(List.of(pharmacy.getSeqNo()));
 		List<Long> itemNos = priceRecords.stream().map(price -> price.getItemNo()).collect(Collectors.toList());
 //		4. Query Mask item
 		List<Mask> masks = maskDbService.findByItemNoIn(itemNos);
@@ -109,7 +109,7 @@ public class PharmacyServiceImpl implements PharmacyService {
 		response.setSeqNo(pharmacy.getSeqNo());
 		response.setName(pharmacy.getName());
 		List<MaskRs> maskRsList = new ArrayList<>();
-		for (MaskPriceRecords priceRecord : priceRecords) {
+		for (MaskPriceRecord priceRecord : priceRecords) {
 			MaskRs maskRs = new MaskRs();
 
 			maskRs.setItemNo(priceRecord.getItemNo());
@@ -148,8 +148,8 @@ public class PharmacyServiceImpl implements PharmacyService {
 	@Override
 	public void deleteItemFromPharmacy(Long itemNo,Long pharmacySeqno){
 		LocalDateTime now = LocalDateTime.now();
-		Optional<MaskPriceRecords> result=priceRecordsDbService.findByItemNoAndPharmacy(itemNo, pharmacySeqno);
-		MaskPriceRecords updateData = result
+		Optional<MaskPriceRecord> result=priceRecordsDbService.findByItemNoAndPharmacy(itemNo, pharmacySeqno);
+		MaskPriceRecord updateData = result
 				.orElseThrow(()->new DataNotFoundException("Not Found with Mask item_no with pharmacySeqNp"));
 		updateData.setIsDelete(true);
 		updateData.setUpdateDate(now.toLocalDate());
@@ -161,16 +161,16 @@ public class PharmacyServiceImpl implements PharmacyService {
 	private void updateMaskPrice(Long pharmacySeqno, List<MaskPirceEditRq> maskPrices) {
 		LocalDateTime now = LocalDateTime.now();
 //		3.1 check itemNo is exist
-		List<MaskPriceRecords> updateDatas = new ArrayList<>();
+		List<MaskPriceRecord> updateDatas = new ArrayList<>();
 		for (MaskPirceEditRq updatePrice :maskPrices) {
-			Optional<MaskPriceRecords> result=priceRecordsDbService.findByItemNoAndPharmacy(updatePrice.getItemNo(), pharmacySeqno);
-			MaskPriceRecords updateData = result
+			Optional<MaskPriceRecord> result=priceRecordsDbService.findByItemNoAndPharmacy(updatePrice.getItemNo(), pharmacySeqno);
+			MaskPriceRecord updateData = result
 					.orElseThrow(()->new DataNotFoundException("Not Found with Mask item_no with pharmacySeqNp"));
 			updateData.setIsDelete(true);
 			updateData.setUpdateDate(now.toLocalDate());
 			updateData.setUpdateTime(now.toLocalTime());
 			updateDatas.add(updateData);
-			MaskPriceRecords insertData = new MaskPriceRecords();
+			MaskPriceRecord insertData = new MaskPriceRecord();
 			insertData.setItemNo(updatePrice.getItemNo());
 			insertData.setPharmacySeqno(pharmacySeqno);
 			insertData.setPrice(updatePrice.getPrice());

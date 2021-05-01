@@ -1,7 +1,6 @@
 package kdan.jessica.phantommask.repository.service;
 
-import kdan.jessica.phantommask.repository.dao.MaskPriceRecordsDao;
-import kdan.jessica.phantommask.repository.entity.MaskPriceRecords;
+import kdan.jessica.phantommask.repository.entity.MaskPriceRecord;
 import kdan.jessica.phantommask.repository.relation.PharmacyPriceMaskRelation;
 import kdan.jessica.phantommask.repository.relation.TransactionReport;
 import org.junit.jupiter.api.Test;
@@ -16,14 +15,14 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class MaskPriceRecordsDbServiceTest {
+public class MaskPriceRecordDbServiceTest {
 
     @Autowired
-    private MaskPriceRecordsDbService dbService;
+    private MaskPriceRecordDbService dbService;
 
     @Test
     public void testFindByPharmacySeqno(){
-        List<MaskPriceRecords> records =dbService.findByPharmacySeqno(List.of(1L,2L));
+        List<MaskPriceRecord> records =dbService.findByPharmacySeqno(List.of(1L,2L));
         assertEquals(1,records.size(),"record size not match");
         assertEquals(1,records.get(0).getSeqNo(),"item_seqNo not match");
     }
@@ -49,7 +48,7 @@ public class MaskPriceRecordsDbServiceTest {
     public void findByItemNoAndPharmacy(){
         Long itemNo=1L;
         Long pharmacy=1L;
-        Optional<MaskPriceRecords> result = dbService.findByItemNoAndPharmacy(itemNo, pharmacy);
+        Optional<MaskPriceRecord> result = dbService.findByItemNoAndPharmacy(itemNo, pharmacy);
         assertNotNull(result.get());
         assertEquals(1,result.get().getSeqNo());
     }

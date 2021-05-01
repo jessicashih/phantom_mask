@@ -1,7 +1,7 @@
 package kdan.jessica.phantommask.repository.service;
 
-import kdan.jessica.phantommask.repository.dao.MaskPriceRecordsDao;
-import kdan.jessica.phantommask.repository.entity.MaskPriceRecords;
+import kdan.jessica.phantommask.repository.dao.MaskPriceRecordDao;
+import kdan.jessica.phantommask.repository.entity.MaskPriceRecord;
 import kdan.jessica.phantommask.repository.relation.PharmacyPriceMaskRelation;
 import kdan.jessica.phantommask.repository.relation.TransactionReport;
 import org.apache.commons.lang3.ObjectUtils;
@@ -18,29 +18,28 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class MaskPriceRecordsDbService {
+public class MaskPriceRecordDbService {
     @Autowired
-    private MaskPriceRecordsDao dao;
+    private MaskPriceRecordDao dao;
 
     @PersistenceContext
     private EntityManager em;
 
-    public Optional<MaskPriceRecords> findById(Long seqno){ return dao.findById(seqno);}
-    public MaskPriceRecords update(MaskPriceRecords updateData){return dao.save(updateData);}
-    public List<MaskPriceRecords> updateAll(List<MaskPriceRecords> updateDatas){
+    public Optional<MaskPriceRecord> findById(Long seqno){ return dao.findById(seqno);}
+    public MaskPriceRecord update(MaskPriceRecord updateData){return dao.save(updateData);}
+    public List<MaskPriceRecord> updateAll(List<MaskPriceRecord> updateDatas){
         return  dao.saveAll(updateDatas);
     }
 
-    public List<MaskPriceRecords> findByPharmacySeqno(List<Long> pharmacySeqnos) {
+    public List<MaskPriceRecord> findByPharmacySeqno(List<Long> pharmacySeqnos) {
 
-        Specification<MaskPriceRecords> specification = new Specification<>() {
+        Specification<MaskPriceRecord> specification = new Specification<>() {
             @Override
-            public Predicate toPredicate(Root<MaskPriceRecords> record, CriteriaQuery<?> query, CriteriaBuilder cb) {
+            public Predicate toPredicate(Root<MaskPriceRecord> record, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 Predicate pharmacySeqnoIn = null;
                 if (pharmacySeqnos != null && !pharmacySeqnos.isEmpty()) {
                     pharmacySeqnoIn = record.get("pharmacySeqno").in(pharmacySeqnos);
@@ -52,11 +51,11 @@ public class MaskPriceRecordsDbService {
         return dao.findAll(specification);
     }
 
-    public Optional<MaskPriceRecords> findByItemNoAndPharmacy(Long itemNo, Long pharmacySeqno) {
+    public Optional<MaskPriceRecord> findByItemNoAndPharmacy(Long itemNo, Long pharmacySeqno) {
 
-        Specification<MaskPriceRecords> specification = new Specification<>() {
+        Specification<MaskPriceRecord> specification = new Specification<>() {
             @Override
-            public Predicate toPredicate(Root<MaskPriceRecords> record, CriteriaQuery<?> query, CriteriaBuilder cb) {
+            public Predicate toPredicate(Root<MaskPriceRecord> record, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 Predicate itemNoEqual = cb.equal(record.get("itemNo"),(itemNo));
                 Predicate pharmacySeqnoEqual = cb.equal(record.get("pharmacySeqno"), (pharmacySeqno));
                 Predicate notDelete = record.get("isDelete").isNull();

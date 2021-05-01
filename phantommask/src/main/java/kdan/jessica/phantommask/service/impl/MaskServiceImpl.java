@@ -8,7 +8,7 @@ import kdan.jessica.phantommask.repository.entity.Mask;
 import kdan.jessica.phantommask.repository.relation.PharmacyPriceMaskRelation;
 import kdan.jessica.phantommask.repository.relation.TransactionReport;
 import kdan.jessica.phantommask.repository.service.MaskDbService;
-import kdan.jessica.phantommask.repository.service.MaskPriceRecordsDbService;
+import kdan.jessica.phantommask.repository.service.MaskPriceRecordDbService;
 import kdan.jessica.phantommask.service.MaskService;
 import kdan.jessica.phantommask.service.ex.DataNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -27,10 +27,10 @@ public class MaskServiceImpl implements MaskService {
     @Autowired
     private MaskDbService dbService;
     @Autowired
-    private MaskPriceRecordsDbService priceRecordService;
+    private MaskPriceRecordDbService priceRecordService;
 
     @Autowired
-    private MaskPriceRecordsDbService maskPriceRecordsDbService;
+    private MaskPriceRecordDbService maskPriceRecordDbService;
 
     @Override
     public List<PharmacyRs> queryMaskPrice(BigDecimal priceMoreThan,BigDecimal priceLessThan){
@@ -80,7 +80,7 @@ public class MaskServiceImpl implements MaskService {
         }
 
 //        1. Query data
-        List<TransactionReport> dbResult = maskPriceRecordsDbService.findTotalTransaction(startDate, endDate);
+        List<TransactionReport> dbResult = maskPriceRecordDbService.findTotalTransaction(startDate, endDate);
 
 //        2. count total amount of masks and dollars value
         List<MaskAmountDetail> maskAmountDetails = new ArrayList<>();

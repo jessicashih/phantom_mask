@@ -36,8 +36,8 @@ public class PharmacyDaoTest {
 		pharmacy.setTueOpen(null);
 		pharmacy.setTueClose(null);
 //		Wed
-		pharmacy.setWenOpen(LocalTime.of(15, 26));
-		pharmacy.setWenClose(LocalTime.of(17, 32));
+		pharmacy.setWedOpen(LocalTime.of(15, 26));
+		pharmacy.setWedClose(LocalTime.of(17, 32));
 //		Thu
 		pharmacy.setThuOpen(LocalTime.of(15, 31));
 		pharmacy.setThuClose(LocalTime.of(17, 46));

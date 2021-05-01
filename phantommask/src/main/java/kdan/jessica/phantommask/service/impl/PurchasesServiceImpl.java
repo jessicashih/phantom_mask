@@ -1,11 +1,11 @@
 package kdan.jessica.phantommask.service.impl;
 
 import kdan.jessica.phantommask.repository.entity.Customer;
-import kdan.jessica.phantommask.repository.entity.MaskPriceRecords;
+import kdan.jessica.phantommask.repository.entity.MaskPriceRecord;
 import kdan.jessica.phantommask.repository.entity.Pharmacy;
 import kdan.jessica.phantommask.repository.entity.PurchaseRecord;
 import kdan.jessica.phantommask.repository.service.CustomerDbService;
-import kdan.jessica.phantommask.repository.service.MaskPriceRecordsDbService;
+import kdan.jessica.phantommask.repository.service.MaskPriceRecordDbService;
 import kdan.jessica.phantommask.repository.service.PharmacyDbService;
 import kdan.jessica.phantommask.repository.service.PurchaseRecordDbService;
 import kdan.jessica.phantommask.service.PurchasesService;
@@ -29,7 +29,7 @@ public class PurchasesServiceImpl implements PurchasesService {
     private CustomerDbService customerDbService;
 
     @Autowired
-    private MaskPriceRecordsDbService priceRecordsDbService;
+    private MaskPriceRecordDbService priceRecordsDbService;
 
     @Autowired
     private PurchaseRecordDbService purchaseRecordDbService;
@@ -40,7 +40,7 @@ public class PurchasesServiceImpl implements PurchasesService {
         log.info("PurchasesTransaction Start");
 
 //        1. check the price records is exist
-        MaskPriceRecords priceRecords = priceRecordsDbService.findByItemNoAndPharmacy(itemNo, pharmacySeqNo)
+        MaskPriceRecord priceRecords = priceRecordsDbService.findByItemNoAndPharmacy(itemNo, pharmacySeqNo)
                 .orElseThrow(() -> new DataNotFoundException("Pharmacy may not have the item, please check the data."));
         BigDecimal price = priceRecords.getPrice();
         log.debug("item price: {}",price);

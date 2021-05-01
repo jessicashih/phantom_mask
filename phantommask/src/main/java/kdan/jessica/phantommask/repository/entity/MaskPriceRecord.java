@@ -12,8 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="mask_price_records")
-public class MaskPriceRecords{
+@Table(name="mask_price_record")
+public class MaskPriceRecord {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="seq_no")

@@ -3,10 +3,10 @@ package kdan.jessica.phantommask.service;
 import kdan.jessica.phantommask.model.EditPharmacyNameAndPriceRq;
 import kdan.jessica.phantommask.model.MaskPirceEditRq;
 import kdan.jessica.phantommask.model.PharmacyRs;
-import kdan.jessica.phantommask.repository.dao.MaskPriceRecordsDao;
+import kdan.jessica.phantommask.repository.dao.MaskPriceRecordDao;
 import kdan.jessica.phantommask.repository.dao.PharmacyDao;
-import kdan.jessica.phantommask.repository.entity.MaskPriceRecords;
-import kdan.jessica.phantommask.repository.service.MaskPriceRecordsDbService;
+import kdan.jessica.phantommask.repository.entity.MaskPriceRecord;
+import kdan.jessica.phantommask.repository.service.MaskPriceRecordDbService;
 import kdan.jessica.phantommask.service.ex.DataNotFoundException;
 import kdan.jessica.phantommask.service.ex.RequestInputException;
 import org.junit.jupiter.api.Test;
@@ -33,10 +33,10 @@ public class PharmacyServiceTest {
     private PharmacyDao dao;
 
     @Autowired
-    private MaskPriceRecordsDao priceRecordsDao;
+    private MaskPriceRecordDao priceRecordsDao;
 
     @Autowired
-    private MaskPriceRecordsDbService priceRecordsDbService;
+    private MaskPriceRecordDbService priceRecordsDbService;
 
     @Test
     public void testFindOpenPharmaciesDateTime() {
@@ -88,7 +88,7 @@ public class PharmacyServiceTest {
     public void testEditNameAndPrice() {
         Long itemNo = 1L;
         Long pharmacySeqno = 1L;
-        MaskPriceRecords result = priceRecordsDbService.findByItemNoAndPharmacy(itemNo, pharmacySeqno)
+        MaskPriceRecord result = priceRecordsDbService.findByItemNoAndPharmacy(itemNo, pharmacySeqno)
                 .orElseThrow(()->new RuntimeException());
         Long seqNo = result.getSeqNo();
 
@@ -104,7 +104,7 @@ public class PharmacyServiceTest {
 
         service.updatePharmacyInfo(request);
 
-        Optional<MaskPriceRecords> afterUpdateData =priceRecordsDbService.findById(seqNo);
+        Optional<MaskPriceRecord> afterUpdateData =priceRecordsDbService.findById(seqNo);
         assertNotNull(afterUpdateData.get());
         assertTrue(afterUpdateData.get().getIsDelete());
     }

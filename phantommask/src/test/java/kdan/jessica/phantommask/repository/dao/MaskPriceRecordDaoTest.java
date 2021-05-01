@@ -16,44 +16,43 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import kdan.jessica.phantommask.repository.dao.MaskPriceRecordsDao;
-import kdan.jessica.phantommask.repository.entity.MaskPriceRecords;
+import kdan.jessica.phantommask.repository.entity.MaskPriceRecord;
 
 @SpringBootTest
 @TestMethodOrder(OrderAnnotation.class)
-public class MaskPriceRecordsDaoTest {
+public class MaskPriceRecordDaoTest {
 
 	@Autowired
-	private MaskPriceRecordsDao dao;
+	private MaskPriceRecordDao dao;
 
 	@Test
 	@Order(1)
 	public void testInsert() {
-		MaskPriceRecords maskPriceRecords = new MaskPriceRecords();
-		maskPriceRecords.setItemNo(2L);
-		maskPriceRecords.setPharmacySeqno(1L);
-		maskPriceRecords.setPrice(new BigDecimal("14.18"));
-		maskPriceRecords.setCreateDate(LocalDate.now());
-		maskPriceRecords.setCreateTime(LocalTime.now());
-		MaskPriceRecords result = dao.save(maskPriceRecords);
+		MaskPriceRecord maskPriceRecord = new MaskPriceRecord();
+		maskPriceRecord.setItemNo(2L);
+		maskPriceRecord.setPharmacySeqno(1L);
+		maskPriceRecord.setPrice(new BigDecimal("14.18"));
+		maskPriceRecord.setCreateDate(LocalDate.now());
+		maskPriceRecord.setCreateTime(LocalTime.now());
+		MaskPriceRecord result = dao.save(maskPriceRecord);
 		assertNotNull(result, "result not be null");
 	}
 
 	@Test
 	@Order(2)
 	public void testQuery() {
-		List<MaskPriceRecords> result = dao.findAll();
+		List<MaskPriceRecord> result = dao.findAll();
 		assertEquals(1, result.size(), "dao didn't delete data");
 	}
 
 	@Test
 	@Order(3)
 	public void testUpdate() {
-		List<MaskPriceRecords> query = dao.findAll();
+		List<MaskPriceRecord> query = dao.findAll();
 		BigDecimal updatePrice = new BigDecimal("8.09");
-		for (MaskPriceRecords maskPriceRecords : query) {
-			maskPriceRecords.setPrice(updatePrice);
-			MaskPriceRecords result = dao.save(maskPriceRecords);
+		for (MaskPriceRecord maskPriceRecord : query) {
+			maskPriceRecord.setPrice(updatePrice);
+			MaskPriceRecord result = dao.save(maskPriceRecord);
 			assertTrue(result.getPrice().compareTo(updatePrice) == 0, "update fail");
 		}
 	}
@@ -62,7 +61,7 @@ public class MaskPriceRecordsDaoTest {
 	@Order(4)
 	public void testDelete() throws InterruptedException {
 		dao.deleteAll();
-		List<MaskPriceRecords> result = dao.findAll();
+		List<MaskPriceRecord> result = dao.findAll();
 		assertEquals(0, result.size(), "dao didn't delete data");
 	}
 
