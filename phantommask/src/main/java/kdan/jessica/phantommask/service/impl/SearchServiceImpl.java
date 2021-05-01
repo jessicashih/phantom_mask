@@ -2,19 +2,23 @@ package kdan.jessica.phantommask.service.impl;
 
 import kdan.jessica.phantommask.model.MaskRs;
 import kdan.jessica.phantommask.model.PharmacyRs;
+import kdan.jessica.phantommask.model.SearchRs;
 import kdan.jessica.phantommask.repository.entity.Mask;
 import kdan.jessica.phantommask.repository.entity.Pharmacy;
-import kdan.jessica.phantommask.model.SearchRs;
 import kdan.jessica.phantommask.repository.service.MaskDbService;
 import kdan.jessica.phantommask.repository.service.PharmacyDbService;
 import kdan.jessica.phantommask.service.SearchService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class SearchServiceImpl implements SearchService {
     @Autowired
     private PharmacyDbService pharmacyDbService;
@@ -23,8 +27,7 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public SearchRs search(String searchString) {
-
-
+        log.info("search Start");
         List<Pharmacy> allPharmacy = pharmacyDbService.findAll();
         List<Mask> allMask = maskDbService.findAll();
 
@@ -62,14 +65,14 @@ public class SearchServiceImpl implements SearchService {
 
         SearchRs response = new SearchRs();
         List<PharmacyRs> pharamcySearchResult = new ArrayList<>();
-        filterAndSortPharmacy.stream().forEach(p->{
+        filterAndSortPharmacy.stream().forEach(p -> {
             PharmacyRs pharmacyRs = new PharmacyRs();
             pharmacyRs.setName(p.getName());
             pharmacyRs.setSeqNo(p.getSeqNo());
             pharamcySearchResult.add(pharmacyRs);
         });
         List<MaskRs> maskSearchResult = new ArrayList<>();
-        filterAndSortMask.stream().forEach(p->{
+        filterAndSortMask.stream().forEach(p -> {
             MaskRs maskRs = new MaskRs();
             maskRs.setName(p.getName());
             maskRs.setItemNo(p.getItemNo());
@@ -77,10 +80,16 @@ public class SearchServiceImpl implements SearchService {
         });
         response.setPharmacyRsList(pharamcySearchResult);
         response.setMaskRsList(maskSearchResult);
-
+        log.info("search End");
         return response;
     }
 
+    /**
+     * 計算字串相似程度
+     * @param str1 字串1
+     * @param str2 字串2
+     * @return 相似程度
+     */
     private float levenshtein(String str1, String str2) {
 //      計算兩個字串的長度。
         int len1 = str1.length();
@@ -110,18 +119,8 @@ public class SearchServiceImpl implements SearchService {
                         dif[i - 1][j] + 1);
             }
         }
-        /*
-            System.out.println("字串\"" str1 "\"與\"" str2 "\"的比較");
-            //取陣列右下角的值，同樣不同位置代表不同字串的比較
-            System.out.println("字串\"" str1 "\"的長度[" str1.length() "]與\"" str2 "\"的長度[" str2.length() "]");
-            System.out.println("差非同步驟：" dif[len1][len2]  "/"  Math.max(str1.length(), str2.length()));
-            //計算相似度
-            float similarity =1 - (float) dif[len1][len2] / Math.max(str1.length(), str2.length());
-            System.out.println("------------------------" (float)1/6);
-            System.out.println("使用方法得到的相似度是：" similarity);
-        */
         float similarity = 1 - (float) dif[len1][len2] / Math.max(str1.length(), str2.length());
-        System.out.println("String【" + str1 + "】and 【" + str2 + "】is mimilarity with ：" + similarity * 100 + "%");
+        log.info("String【{}}】and 【{}}】is mimilarity with ：{}%",str1,str2,similarity * 100);
 
         return similarity;
     }

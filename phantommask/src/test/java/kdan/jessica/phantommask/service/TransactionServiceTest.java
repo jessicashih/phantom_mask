@@ -1,5 +1,6 @@
 package kdan.jessica.phantommask.service;
 
+import kdan.jessica.phantommask.model.TransactionRepostRs;
 import kdan.jessica.phantommask.repository.entity.Customer;
 import kdan.jessica.phantommask.repository.entity.MaskPriceRecord;
 import kdan.jessica.phantommask.repository.entity.Pharmacy;
@@ -19,10 +20,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-public class PurchasesServiceTest {
+public class TransactionServiceTest {
 
     @Autowired
-    private PurchasesService service;
+    private TransactionService service;
 
     @Autowired
     private PharmacyDbService pharmacyDbService;
@@ -64,7 +65,17 @@ public class PurchasesServiceTest {
         assertEquals(exceptCustomerBalance,customerBalanceAfter);
         assertEquals(exceptPharmacyBalance,pharmacyBalanceAfter);
         assertEquals(purchaseRecordSize+1,purchaseRecordAfter.size());
+    }
 
+    @Test
+    public void findTotalTransaction(){
+        String startDate = "2021-01-01";
+        String endDate = "2021-04-30";
+        TransactionRepostRs response = service.findTotalTransaction(startDate, endDate);
+        assertEquals(9,response.getTotalAmountOfMask());
+        assertEquals(new BigDecimal("51.22"),response.getTotalAmountOfDollarValue());
+        assertEquals(2,response.getDetail().size());
 
     }
+
 }

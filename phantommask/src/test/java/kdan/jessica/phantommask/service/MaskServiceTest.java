@@ -25,17 +25,6 @@ public class MaskServiceTest {
     }
 
     @Test
-    public void findTotalTransaction(){
-        String startDate = "2021-01-01";
-        String endDate = "2021-04-30";
-        TransactionRepostRs response = maskService.findTotalTransaction(startDate, endDate);
-        assertEquals(9,response.getTotalAmountOfMask());
-        assertEquals(new BigDecimal("51.22"),response.getTotalAmountOfDollarValue());
-        assertEquals(2,response.getDetail().size());
-
-    }
-
-    @Test
     public void updateName(){
         Long itemNo = 1L;
         String itemName = "Masquerade-aaaaaaaaa";

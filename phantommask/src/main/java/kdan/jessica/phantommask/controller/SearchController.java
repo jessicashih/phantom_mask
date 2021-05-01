@@ -11,15 +11,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/search")
-public class SearchController extends BaseController{
+public class SearchController extends BaseController {
 
     @Autowired
     private SearchService searchService;
 
     @GetMapping(path = "/v1")
-    public JsonResult<SearchRs> search(@RequestParam String searchName){
+    public JsonResult<SearchRs> search(@RequestParam String searchName) {
         SearchRs response = searchService.search(searchName);
-        return new JsonResult<>(SUCCESS,response);
+        return new JsonResult<>(SUCCESS, response);
     }
 
 }

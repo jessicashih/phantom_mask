@@ -1,8 +1,8 @@
 package kdan.jessica.phantommask.controller;
 
 import kdan.jessica.phantommask.model.JsonResult;
-import kdan.jessica.phantommask.model.TopUserRs;
 import kdan.jessica.phantommask.model.TopUserRq;
+import kdan.jessica.phantommask.model.TopUserRs;
 import kdan.jessica.phantommask.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * 客戶相關操作
+ */
 @RestController
 @RequestMapping(path = "/customer")
 public class CustomerController extends BaseController{
