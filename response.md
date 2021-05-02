@@ -1,6 +1,6 @@
 # Response
 ## API Document (required)
-  Import [this](#api-document-required) json file to Postman
+  Import [this](data/pharmacy.postman_demoApi.json) json file to Postman
 
 ## Import Data Commands (required)
   * `rake import:pharmacy[PATH_TO_FILE]`
