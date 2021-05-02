@@ -1,0 +1,13 @@
+version: '3'
+services:
+  db:
+     image: mysql
+     environment:
+        MYSQL_ROOT_PASSWORD: sa123
+        MYSQL_DATABASE: kdan
+     ports:
+      - 3306:3306
+     volumes:
+      - ./sqls/:/docker-entrypoint-initdb.d/
+     container_name: kdan_DB
+  
