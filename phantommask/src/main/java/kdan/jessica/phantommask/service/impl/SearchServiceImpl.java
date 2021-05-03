@@ -1,8 +1,6 @@
 package kdan.jessica.phantommask.service.impl;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -31,7 +29,7 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public SearchRs search(String searchString) {
         log.info("search Start");
-        if(StringUtils.isEmpty(searchString)){
+        if (StringUtils.isEmpty(searchString)) {
             throw new RequestInputException("searchString can't be null, Please check imput data.");
         }
         List<Pharmacy> allPharmacy = pharmacyDbService.findAll();
@@ -78,12 +76,14 @@ public class SearchServiceImpl implements SearchService {
             pharamcySearchResult.add(pharmacyRs);
         });
         List<MaskRs> maskSearchResult = new ArrayList<>();
-        filterAndSortMask.stream().forEach(p -> {
-            MaskRs maskRs = new MaskRs();
-            maskRs.setName(p.getName());
-            maskRs.setItemNo(p.getItemNo());
-            maskSearchResult.add(maskRs);
-        });
+        filterAndSortMask.stream()
+                .map(m -> m.getName())
+                .collect(Collectors.toSet())
+                .forEach(p -> {
+                    MaskRs maskRs = new MaskRs();
+                    maskRs.setName(p);
+                    maskSearchResult.add(maskRs);
+                });
         response.setPharmacyRsList(pharamcySearchResult);
         response.setMaskRsList(maskSearchResult);
         log.info("search End");
@@ -92,6 +92,7 @@ public class SearchServiceImpl implements SearchService {
 
     /**
      * 計算字串相似程度
+     *
      * @param str1 字串1
      * @param str2 字串2
      * @return 相似程度
@@ -126,7 +127,7 @@ public class SearchServiceImpl implements SearchService {
             }
         }
         float similarity = 1 - (float) dif[len1][len2] / Math.max(str1.length(), str2.length());
-        log.info("String【{}}】and 【{}}】is mimilarity with ：{}%",str1,str2,similarity * 100);
+        log.debug("String【{}}】and 【{}}】is mimilarity with ：{}%", str1, str2, similarity * 100);
 
         return similarity;
     }
