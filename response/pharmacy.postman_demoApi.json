@@ -12,12 +12,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/pharmacy/v1/mask?pharmacySeqno=15&sortBy=name",
+					"raw": "http://{{domain}}/pharmacy/v1/mask?pharmacySeqno=15&sortBy=name",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"{{domain}}"
 					],
-					"port": "8080",
 					"path": [
 						"pharmacy",
 						"v1",
@@ -46,12 +45,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/pharmacy/v1/open/dateTime?dateTime=2021-04-26 11:50",
+					"raw": "http://{{domain}}/pharmacy/v1/open/dateTime?dateTime=2021-04-26 11:50",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"{{domain}}"
 					],
-					"port": "8080",
 					"path": [
 						"pharmacy",
 						"v1",
@@ -76,12 +74,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/pharmacy/v1/open/date?dateTime=2021-04-26",
+					"raw": "http://{{domain}}/pharmacy/v1/open/date?dateTime=2021-04-26",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"{{domain}}"
 					],
-					"port": "8080",
 					"path": [
 						"pharmacy",
 						"v1",
@@ -106,12 +103,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/mask/v1/price?priceMoreThan=9&priceLessThan=9.5",
+					"raw": "http://{{domain}}/mask/v1/price?priceMoreThan=9&priceLessThan=9.5",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"{{domain}}"
 					],
-					"port": "8080",
 					"path": [
 						"mask",
 						"v1",
@@ -140,12 +136,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/customer/v1/top_purchaser?top=10&startDate=2021-01-01&endDate=2021-01-28",
+					"raw": "http://{{domain}}/customer/v1/top_purchaser?top=10&startDate=2021-01-01&endDate=2021-01-28",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"{{domain}}"
 					],
-					"port": "8080",
 					"path": [
 						"customer",
 						"v1",
@@ -179,12 +174,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/transaction/v1/totalReport",
+					"raw": "http://{{domain}}/transaction/v1/totalReport?startDate=2021-01-01&endDate=2021-04-28",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"{{domain}}"
 					],
-					"port": "8080",
 					"path": [
 						"transaction",
 						"v1",
@@ -194,14 +188,12 @@
 						{
 							"key": "startDate",
 							"value": "2021-01-01",
-							"description": "查詢起日\n預設為查詢當日日期",
-							"disabled": true
+							"description": "查詢起日\n預設為查詢當日日期"
 						},
 						{
 							"key": "endDate",
 							"value": "2021-04-28",
-							"description": "查詢迄日\n預設為查詢當日日期",
-							"disabled": true
+							"description": "查詢迄日\n預設為查詢當日日期"
 						}
 					]
 				},
@@ -224,12 +216,11 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/pharmacy/v1/editNameAndPrice",
+					"raw": "http://{{domain}}/pharmacy/v1/editNameAndPrice",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"{{domain}}"
 					],
-					"port": "8080",
 					"path": [
 						"pharmacy",
 						"v1",
@@ -255,12 +246,11 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/mask/v1/updateName",
+					"raw": "http://{{domain}}/mask/v1/updateName",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"{{domain}}"
 					],
-					"port": "8080",
 					"path": [
 						"mask",
 						"v1",
@@ -286,12 +276,11 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/pharmacy/v1/deleteItem",
+					"raw": "http://{{domain}}/pharmacy/v1/deleteItem",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"{{domain}}"
 					],
-					"port": "8080",
 					"path": [
 						"pharmacy",
 						"v1",
@@ -317,12 +306,11 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/transaction/v1/purchases",
+					"raw": "http://{{domain}}/transaction/v1/purchases",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"{{domain}}"
 					],
-					"port": "8080",
 					"path": [
 						"transaction",
 						"v1",
@@ -339,12 +327,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/search/v1?searchName=Batter",
+					"raw": "http://{{domain}}/search/v1?searchName=A",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"{{domain}}"
 					],
-					"port": "8080",
 					"path": [
 						"search",
 						"v1"
@@ -352,7 +339,7 @@
 					"query": [
 						{
 							"key": "searchName",
-							"value": "Batter"
+							"value": "A"
 						}
 					]
 				},
@@ -366,12 +353,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/pharmacy/v1/search?searchName=Batter",
+					"raw": "http://{{domain}}/pharmacy/v1/search?searchName=Batter",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"{{domain}}"
 					],
-					"port": "8080",
 					"path": [
 						"pharmacy",
 						"v1",
@@ -394,12 +380,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/mask/v1/search?searchName=Masquerade",
+					"raw": "http://{{domain}}/mask/v1/search?searchName=Mas",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"{{domain}}"
 					],
-					"port": "8080",
 					"path": [
 						"mask",
 						"v1",
@@ -408,7 +393,7 @@
 					"query": [
 						{
 							"key": "searchName",
-							"value": "Masquerade"
+							"value": "Mas"
 						}
 					]
 				},
