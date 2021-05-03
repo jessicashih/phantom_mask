@@ -1,9 +1,11 @@
 # Response
 ## API Document (required)
-  Import [this](data/pharmacy.postman_demoApi.json) json file to Postman
+  Import two json file to Postman
+   1. [demo_api](response/json_file/pharmacy.postman_demoApi.json)
+   2. [enviroment](response/json_file/Docker.postman_environment.json)
 
 ## Import Data Commands (required)
-  程式已用docker打包，只需run docker-compose，便可直接使用Postman測試API
+  The program has been packaged with docker, just run docker container. You can directly test the API on Postman.
   1. Step 1: Download Docker [here](https://www.docker.com/products/docker-desktop).
   2. Step 2: From a terminal navigate to [file](response) and execute `docker-compose up`.
   3. Step 3: Check the Spring mark is shown on terminal,then you can test API on Postman.
