@@ -1,12 +1,18 @@
 package kdan.jessica.phantommask.repository.service;
 
+import kdan.jessica.phantommask.json.TransformJsonData;
+import kdan.jessica.phantommask.repository.dao.*;
 import kdan.jessica.phantommask.repository.entity.relation.PharmacyPriceMaskRelation;
 import kdan.jessica.phantommask.repository.entity.relation.TopUser;
 import kdan.jessica.phantommask.repository.entity.relation.TransactionReport;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -17,10 +23,35 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * 關聯查詢 Test
  */
 @SpringBootTest
+@ActiveProfiles("test")
 public class RelationalQueryServiceTest {
 
     @Autowired
     private RelationalQueryService relationalQueryService;
+    @Autowired
+    private PharmacyDao pharmacyDao;
+    @Autowired
+    private MaskDao maskDao;
+    @Autowired
+    private CustomerDao customerDao;
+    @Autowired
+    private MaskPriceRecordDao maskPriceRecordDao;
+    @Autowired
+    private PurchaseRecordDao purchaseRecordDao;
+
+    @BeforeEach
+    public void initData() throws IOException {
+        TransformJsonData jsonConvertor = new TransformJsonData(pharmacyDao, maskDao, customerDao, maskPriceRecordDao, purchaseRecordDao);
+        jsonConvertor.transform();
+    }
+    @AfterEach
+    public void deleteAll(){
+        pharmacyDao.deleteAll();
+        maskDao.deleteAll();
+        customerDao.deleteAll();
+        maskPriceRecordDao.deleteAll();
+        purchaseRecordDao.deleteAll();
+    }
 
     /**
      * 查詢在某個時段間消費排行前幾名的顧客

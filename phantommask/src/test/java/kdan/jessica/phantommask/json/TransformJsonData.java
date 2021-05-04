@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +27,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @Slf4j
-public class TransformTheData {
+@ActiveProfiles("test")
+public class TransformJsonData {
     @Autowired
     private PharmacyDao pharmacyDao;
     @Autowired
@@ -39,8 +41,17 @@ public class TransformTheData {
     private PurchaseRecordDao purchaseRecordDao;
     private ObjectMapper mapper = new ObjectMapper();
 
+    public TransformJsonData(PharmacyDao pharmacyDao, MaskDao maskDao, CustomerDao customerDao,
+                             MaskPriceRecordDao maskPriceRecordDao, PurchaseRecordDao purchaseRecordDao) {
+        this.pharmacyDao = pharmacyDao;
+        this.maskDao = maskDao;
+        this.customerDao = customerDao;
+        this.maskPriceRecordDao = maskPriceRecordDao;
+        this.purchaseRecordDao = purchaseRecordDao;
+    }
+
     @Test
-    public void transformPharmacy() throws IOException {
+    public void transform() throws IOException {
         LocalDateTime now = LocalDateTime.now();
         Map<String, Mask> maskMap = new HashMap<>();
         Map<String, Pharmacy> pharmacyMap = new HashMap<>();

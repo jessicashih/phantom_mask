@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import kdan.jessica.phantommask.repository.entity.MaskPriceRecord;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -25,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @SpringBootTest
 @TestMethodOrder(OrderAnnotation.class)
-@Transactional
+@ActiveProfiles("test")
 public class MaskPriceRecordDaoTest {
 
 	@Autowired
