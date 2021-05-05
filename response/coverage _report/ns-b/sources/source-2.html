@@ -1,0 +1,117 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > PharmacyService</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+    @import "../../.css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../.js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">kdan.jessica.phantommask.service</a>
+</div>
+
+<h1>Coverage Summary for Class: PharmacyService (kdan.jessica.phantommask.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">PharmacyService</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package kdan.jessica.phantommask.service;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import kdan.jessica.phantommask.model.EditPharmacyNameAndPriceRq;
+<i class="no-highlight">4</i>&nbsp;import kdan.jessica.phantommask.model.FindOpenPharmaciesRs;
+<i class="no-highlight">5</i>&nbsp;import kdan.jessica.phantommask.model.PharmacyRs;
+<i class="no-highlight">6</i>&nbsp;
+<i class="no-highlight">7</i>&nbsp;public interface PharmacyService {
+<i class="no-highlight">8</i>&nbsp;
+<i class="no-highlight">9</i>&nbsp;    /**
+<i class="no-highlight">10</i>&nbsp;     * 以特定「日期時間」查詢開店的藥局
+<i class="no-highlight">11</i>&nbsp;     *
+<i class="no-highlight">12</i>&nbsp;     * @param dateTimeStr 日期時間(yyyy-MM-dd HH:mm)
+<i class="no-highlight">13</i>&nbsp;     * @return 查詢到的藥局資訊
+<i class="no-highlight">14</i>&nbsp;     */
+<i class="no-highlight">15</i>&nbsp;    FindOpenPharmaciesRs findOpenPharmaciesAtCertainDateTime(String dateTimeStr);
+<i class="no-highlight">16</i>&nbsp;
+<i class="no-highlight">17</i>&nbsp;    /**
+<i class="no-highlight">18</i>&nbsp;     * 以特定「日期」查詢開店的藥局
+<i class="no-highlight">19</i>&nbsp;     *
+<i class="no-highlight">20</i>&nbsp;     * @param dateStr 日期時間(yyyy-MM-dd)
+<i class="no-highlight">21</i>&nbsp;     * @return 查詢到的藥局資訊
+<i class="no-highlight">22</i>&nbsp;     */
+<i class="no-highlight">23</i>&nbsp;    FindOpenPharmaciesRs findOpenPharmaciesAtCertainDate(String dateStr);
+<i class="no-highlight">24</i>&nbsp;
+<i class="no-highlight">25</i>&nbsp;    /**
+<i class="no-highlight">26</i>&nbsp;     * 查詢指定藥局所賣口罩
+<i class="no-highlight">27</i>&nbsp;     *
+<i class="no-highlight">28</i>&nbsp;     * @param pharmacySeqno 藥局Id
+<i class="no-highlight">29</i>&nbsp;     * @param sortBy        以什麼條件作為排序
+<i class="no-highlight">30</i>&nbsp;     * @return 查詢資料結果
+<i class="no-highlight">31</i>&nbsp;     */
+<i class="no-highlight">32</i>&nbsp;    PharmacyRs findPharmacyMask(Long pharmacySeqno, String sortBy);
+<i class="no-highlight">33</i>&nbsp;
+<i class="no-highlight">34</i>&nbsp;    /**
+<i class="no-highlight">35</i>&nbsp;     * 修改藥局名稱及口罩價格
+<i class="no-highlight">36</i>&nbsp;     *
+<i class="no-highlight">37</i>&nbsp;     * @param request 查詢條件
+<i class="no-highlight">38</i>&nbsp;     */
+<i class="no-highlight">39</i>&nbsp;    void updatePharmacyInfo(EditPharmacyNameAndPriceRq request);
+<i class="no-highlight">40</i>&nbsp;
+<i class="no-highlight">41</i>&nbsp;    /**
+<i class="no-highlight">42</i>&nbsp;     * 將口罩於某藥局中刪除
+<i class="no-highlight">43</i>&nbsp;     *
+<i class="no-highlight">44</i>&nbsp;     * @param itemNo        口罩貨號
+<i class="no-highlight">45</i>&nbsp;     * @param pharmacySeqno 藥局編號
+<i class="no-highlight">46</i>&nbsp;     */
+<i class="no-highlight">47</i>&nbsp;    void deleteItemFromPharmacy(Long itemNo, Long pharmacySeqno);
+<i class="no-highlight">48</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2021-05-05 16:16</div>
+</div>
+</body>
+</html>

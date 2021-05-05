@@ -1,0 +1,138 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > BaseController</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+    @import "../../.css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../.js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">kdan.jessica.phantommask.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: BaseController (kdan.jessica.phantommask.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BaseController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    12.5%
+  </span>
+  <span class="absValue">
+    (1/8)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package kdan.jessica.phantommask.controller;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import kdan.jessica.phantommask.repository.ex.DataException;
+<i class="no-highlight">4</i>&nbsp;import org.springframework.web.bind.annotation.ExceptionHandler;
+<i class="no-highlight">5</i>&nbsp;
+<i class="no-highlight">6</i>&nbsp;import kdan.jessica.phantommask.model.JsonResult;
+<i class="no-highlight">7</i>&nbsp;import kdan.jessica.phantommask.service.ex.DataNotFoundException;
+<i class="no-highlight">8</i>&nbsp;import kdan.jessica.phantommask.service.ex.RequestInputException;
+<i class="no-highlight">9</i>&nbsp;import kdan.jessica.phantommask.service.ex.ServiceException;
+<i class="no-highlight">10</i>&nbsp;
+<i class="no-highlight">11</i>&nbsp;/**
+<i class="no-highlight">12</i>&nbsp; * Common Controller
+<i class="no-highlight">13</i>&nbsp; */
+<b class="fc"><i class="no-highlight">14</i>&nbsp;public abstract class BaseController {</b>
+<i class="no-highlight">15</i>&nbsp;    public static final int SUCCESS = 200;
+<i class="no-highlight">16</i>&nbsp;    public static final int KNOWN_ERROR = 400;
+<i class="no-highlight">17</i>&nbsp;    public static final int INPUT_ERROR = 401;
+<i class="no-highlight">18</i>&nbsp;    public static final int UNKNOW_ERROR = 500;
+<i class="no-highlight">19</i>&nbsp;
+<i class="no-highlight">20</i>&nbsp;    @ExceptionHandler(value = {ServiceException.class, DataException.class})
+<i class="no-highlight">21</i>&nbsp;    public JsonResult&lt;Void&gt; handleException(Throwable e) {
+<b class="nc"><i class="no-highlight">22</i>&nbsp;        JsonResult&lt;Void&gt; errorJs = null;</b>
+<b class="nc"><i class="no-highlight">23</i>&nbsp;        if (e instanceof RequestInputException) {</b>
+<b class="nc"><i class="no-highlight">24</i>&nbsp;            errorJs = new JsonResult&lt;Void&gt;(INPUT_ERROR, e.getMessage());</b>
+<b class="nc"><i class="no-highlight">25</i>&nbsp;        } else if (e instanceof DataNotFoundException) {</b>
+<b class="nc"><i class="no-highlight">26</i>&nbsp;            errorJs = new JsonResult&lt;Void&gt;(KNOWN_ERROR, e.getMessage());</b>
+<i class="no-highlight">27</i>&nbsp;        } else {
+<b class="nc"><i class="no-highlight">28</i>&nbsp;            errorJs = new JsonResult&lt;Void&gt;(UNKNOW_ERROR, e.getMessage());</b>
+<i class="no-highlight">29</i>&nbsp;        }
+<i class="no-highlight">30</i>&nbsp;
+<b class="nc"><i class="no-highlight">31</i>&nbsp;        return errorJs;</b>
+<i class="no-highlight">32</i>&nbsp;    }
+<i class="no-highlight">33</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2021-05-05 16:16</div>
+</div>
+</body>
+</html>

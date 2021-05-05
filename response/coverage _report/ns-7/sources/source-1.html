@@ -1,0 +1,181 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > BaseDbService</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+    @import "../../.css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../.js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">kdan.jessica.phantommask.repository.service</a>
+</div>
+
+<h1>Coverage Summary for Class: BaseDbService (kdan.jessica.phantommask.repository.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BaseDbService</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/13)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package kdan.jessica.phantommask.repository.service;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import kdan.jessica.phantommask.repository.dao.BaseDao;
+<i class="no-highlight">4</i>&nbsp;import org.hibernate.exception.DataException;
+<i class="no-highlight">5</i>&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+<i class="no-highlight">6</i>&nbsp;import org.springframework.transaction.annotation.Transactional;
+<i class="no-highlight">7</i>&nbsp;
+<i class="no-highlight">8</i>&nbsp;import javax.persistence.EntityManager;
+<i class="no-highlight">9</i>&nbsp;import javax.persistence.PersistenceContext;
+<i class="no-highlight">10</i>&nbsp;import java.util.List;
+<i class="no-highlight">11</i>&nbsp;import java.util.Optional;
+<i class="no-highlight">12</i>&nbsp;
+<i class="no-highlight">13</i>&nbsp;/**
+<i class="no-highlight">14</i>&nbsp; * Common DB Service
+<i class="no-highlight">15</i>&nbsp; *
+<i class="no-highlight">16</i>&nbsp; * @param &lt;D&gt; JpaRepository
+<i class="no-highlight">17</i>&nbsp; * @param &lt;E&gt; Entity
+<i class="no-highlight">18</i>&nbsp; * @param &lt;K&gt; Key Type
+<i class="no-highlight">19</i>&nbsp; */
+<b class="nc"><i class="no-highlight">20</i>&nbsp;public abstract class BaseDbService&lt;D extends BaseDao&lt;E, K&gt;, E, K&gt; {</b>
+<i class="no-highlight">21</i>&nbsp;    /**
+<i class="no-highlight">22</i>&nbsp;     * GenericDao，建構時由子類別提供實體
+<i class="no-highlight">23</i>&nbsp;     */
+<i class="no-highlight">24</i>&nbsp;    @Autowired
+<i class="no-highlight">25</i>&nbsp;    protected D dao;
+<i class="no-highlight">26</i>&nbsp;
+<i class="no-highlight">27</i>&nbsp;    /**
+<i class="no-highlight">28</i>&nbsp;     * EntityManager
+<i class="no-highlight">29</i>&nbsp;     */
+<i class="no-highlight">30</i>&nbsp;    @PersistenceContext
+<i class="no-highlight">31</i>&nbsp;    private EntityManager em;
+<i class="no-highlight">32</i>&nbsp;
+<i class="no-highlight">33</i>&nbsp;    /**
+<i class="no-highlight">34</i>&nbsp;     * 依主鍵查詢
+<i class="no-highlight">35</i>&nbsp;     */
+<i class="no-highlight">36</i>&nbsp;    @Transactional(readOnly = true)
+<i class="no-highlight">37</i>&nbsp;    public Optional&lt;E&gt; findById(final K id) {
+<b class="nc"><i class="no-highlight">38</i>&nbsp;        return dao.findById(id);</b>
+<i class="no-highlight">39</i>&nbsp;    }
+<i class="no-highlight">40</i>&nbsp;
+<i class="no-highlight">41</i>&nbsp;    public List&lt;E&gt; findAll(final K id) {
+<b class="nc"><i class="no-highlight">42</i>&nbsp;        return dao.findAll();</b>
+<i class="no-highlight">43</i>&nbsp;    }
+<i class="no-highlight">44</i>&nbsp;
+<i class="no-highlight">45</i>&nbsp;    public E update(final E entity) {
+<b class="nc"><i class="no-highlight">46</i>&nbsp;        K id = getKey(entity);</b>
+<b class="nc"><i class="no-highlight">47</i>&nbsp;        if (id != null &amp;&amp; existsById(id)) {</b>
+<b class="nc"><i class="no-highlight">48</i>&nbsp;            return dao.save(entity);</b>
+<i class="no-highlight">49</i>&nbsp;        } else {
+<i class="no-highlight">50</i>&nbsp;//            TODO
+<b class="nc"><i class="no-highlight">51</i>&nbsp;            throw new RuntimeException();</b>
+<i class="no-highlight">52</i>&nbsp;        }
+<i class="no-highlight">53</i>&nbsp;    }
+<i class="no-highlight">54</i>&nbsp;
+<i class="no-highlight">55</i>&nbsp;    public E insert(final E entity) {
+<b class="nc"><i class="no-highlight">56</i>&nbsp;        K id = getKey(entity);</b>
+<b class="nc"><i class="no-highlight">57</i>&nbsp;        if (id != null &amp;&amp; existsById(id)) {</b>
+<i class="no-highlight">58</i>&nbsp;//            TODO
+<b class="nc"><i class="no-highlight">59</i>&nbsp;            throw  new RuntimeException();</b>
+<i class="no-highlight">60</i>&nbsp;        }else {
+<b class="nc"><i class="no-highlight">61</i>&nbsp;            return dao.save(entity);</b>
+<i class="no-highlight">62</i>&nbsp;        }
+<i class="no-highlight">63</i>&nbsp;    }
+<i class="no-highlight">64</i>&nbsp;
+<i class="no-highlight">65</i>&nbsp;    public K getKey(final E entity) {
+<b class="nc"><i class="no-highlight">66</i>&nbsp;        return (K) em.getEntityManagerFactory().getPersistenceUnitUtil().getIdentifier(entity);</b>
+<i class="no-highlight">67</i>&nbsp;    }
+<i class="no-highlight">68</i>&nbsp;
+<i class="no-highlight">69</i>&nbsp;    /**
+<i class="no-highlight">70</i>&nbsp;     * 判斷主鍵是否存在
+<i class="no-highlight">71</i>&nbsp;     */
+<i class="no-highlight">72</i>&nbsp;    @Transactional(readOnly = true)
+<i class="no-highlight">73</i>&nbsp;    public Boolean existsById(final K id) {
+<b class="nc"><i class="no-highlight">74</i>&nbsp;        return this.dao.existsById(id);</b>
+<i class="no-highlight">75</i>&nbsp;    }
+<i class="no-highlight">76</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2021-05-05 16:16</div>
+</div>
+</body>
+</html>

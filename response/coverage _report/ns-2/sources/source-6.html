@@ -1,0 +1,131 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > TransactionController</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+    @import "../../.css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../.js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">kdan.jessica.phantommask.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: TransactionController (kdan.jessica.phantommask.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TransactionController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (1/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    20%
+  </span>
+  <span class="absValue">
+    (1/5)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package kdan.jessica.phantommask.controller;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import kdan.jessica.phantommask.model.*;
+<i class="no-highlight">4</i>&nbsp;import kdan.jessica.phantommask.service.TransactionService;
+<i class="no-highlight">5</i>&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+<i class="no-highlight">6</i>&nbsp;import org.springframework.web.bind.annotation.*;
+<i class="no-highlight">7</i>&nbsp;
+<i class="no-highlight">8</i>&nbsp;@RestController
+<i class="no-highlight">9</i>&nbsp;@RequestMapping(path = &quot;/transaction&quot;)
+<b class="fc"><i class="no-highlight">10</i>&nbsp;public class TransactionController extends BaseController {</b>
+<i class="no-highlight">11</i>&nbsp;
+<i class="no-highlight">12</i>&nbsp;    @Autowired
+<i class="no-highlight">13</i>&nbsp;    private TransactionService service;
+<i class="no-highlight">14</i>&nbsp;
+<i class="no-highlight">15</i>&nbsp;    @PostMapping(path = &quot;/v1/purchases&quot;)
+<i class="no-highlight">16</i>&nbsp;    public JsonResult&lt;PurchasesRs&gt; purchasesTransaction(@RequestBody PurchasesRq request) {
+<b class="nc"><i class="no-highlight">17</i>&nbsp;        String transactionId = service.purchasesTransaction(request.getPharmacySeqNo(), request.getCustomerId(), request.getItemNo());</b>
+<b class="nc"><i class="no-highlight">18</i>&nbsp;        return new JsonResult&lt;&gt;(SUCCESS, new PurchasesRs(transactionId));</b>
+<i class="no-highlight">19</i>&nbsp;    }
+<i class="no-highlight">20</i>&nbsp;
+<i class="no-highlight">21</i>&nbsp;    @GetMapping(path = &quot;/v1/totalReport&quot;)
+<i class="no-highlight">22</i>&nbsp;    public JsonResult&lt;TransactionRepostRs&gt; findTotalTransaction(TransactionReportRq request) {
+<b class="nc"><i class="no-highlight">23</i>&nbsp;        TransactionRepostRs response = service.findTotalTransaction(request.getStartDate(), request.getEndDate());</b>
+<b class="nc"><i class="no-highlight">24</i>&nbsp;        return new JsonResult&lt;&gt;(SUCCESS, response);</b>
+<i class="no-highlight">25</i>&nbsp;    }
+<i class="no-highlight">26</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2021-05-05 16:16</div>
+</div>
+</body>
+</html>

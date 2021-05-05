@@ -1,0 +1,363 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > PharmacyServiceImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+    @import "../../.css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../.js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">kdan.jessica.phantommask.service.impl</a>
+</div>
+
+<h1>Coverage Summary for Class: PharmacyServiceImpl (kdan.jessica.phantommask.service.impl)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PharmacyServiceImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (14/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    98.4%
+  </span>
+  <span class="absValue">
+    (121/123)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">PharmacyServiceImpl$$EnhancerBySpringCGLIB$$e6d5f734</td>
+  </tr>
+  <tr>
+    <td class="name">PharmacyServiceImpl$$EnhancerBySpringCGLIB$$e6d5f734$$FastClassBySpringCGLIB$$1681eba1</td>
+  </tr>
+  <tr>
+    <td class="name">PharmacyServiceImpl$$FastClassBySpringCGLIB$$d2b0c04c</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (14/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    98.4%
+  </span>
+  <span class="absValue">
+    (121/123)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package kdan.jessica.phantommask.service.impl;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import java.time.LocalDate;
+<i class="no-highlight">4</i>&nbsp;import java.time.LocalDateTime;
+<i class="no-highlight">5</i>&nbsp;import java.time.format.DateTimeFormatter;
+<i class="no-highlight">6</i>&nbsp;import java.util.ArrayList;
+<i class="no-highlight">7</i>&nbsp;import java.util.Comparator;
+<i class="no-highlight">8</i>&nbsp;import java.util.List;
+<i class="no-highlight">9</i>&nbsp;import java.util.Map;
+<i class="no-highlight">10</i>&nbsp;import java.util.Optional;
+<i class="no-highlight">11</i>&nbsp;import java.util.stream.Collectors;
+<i class="no-highlight">12</i>&nbsp;
+<i class="no-highlight">13</i>&nbsp;import org.apache.commons.lang3.ObjectUtils;
+<i class="no-highlight">14</i>&nbsp;import org.apache.commons.lang3.StringUtils;
+<i class="no-highlight">15</i>&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+<i class="no-highlight">16</i>&nbsp;import org.springframework.stereotype.Service;
+<i class="no-highlight">17</i>&nbsp;import org.springframework.transaction.annotation.Transactional;
+<i class="no-highlight">18</i>&nbsp;import org.springframework.util.CollectionUtils;
+<i class="no-highlight">19</i>&nbsp;
+<i class="no-highlight">20</i>&nbsp;import kdan.jessica.phantommask.model.EditPharmacyNameAndPriceRq;
+<i class="no-highlight">21</i>&nbsp;import kdan.jessica.phantommask.model.FindOpenPharmaciesRs;
+<i class="no-highlight">22</i>&nbsp;import kdan.jessica.phantommask.model.MaskPirceEditRq;
+<i class="no-highlight">23</i>&nbsp;import kdan.jessica.phantommask.model.MaskRs;
+<i class="no-highlight">24</i>&nbsp;import kdan.jessica.phantommask.model.PharmacyRs;
+<i class="no-highlight">25</i>&nbsp;import kdan.jessica.phantommask.repository.entity.Mask;
+<i class="no-highlight">26</i>&nbsp;import kdan.jessica.phantommask.repository.entity.MaskPriceRecord;
+<i class="no-highlight">27</i>&nbsp;import kdan.jessica.phantommask.repository.entity.Pharmacy;
+<i class="no-highlight">28</i>&nbsp;import kdan.jessica.phantommask.repository.service.MaskDbService;
+<i class="no-highlight">29</i>&nbsp;import kdan.jessica.phantommask.repository.service.MaskPriceRecordDbService;
+<i class="no-highlight">30</i>&nbsp;import kdan.jessica.phantommask.repository.service.PharmacyDbService;
+<i class="no-highlight">31</i>&nbsp;import kdan.jessica.phantommask.service.PharmacyService;
+<i class="no-highlight">32</i>&nbsp;import kdan.jessica.phantommask.service.ex.DataNotFoundException;
+<i class="no-highlight">33</i>&nbsp;import kdan.jessica.phantommask.service.ex.RequestInputException;
+<i class="no-highlight">34</i>&nbsp;import lombok.extern.slf4j.Slf4j;
+<i class="no-highlight">35</i>&nbsp;
+<i class="no-highlight">36</i>&nbsp;@Service
+<b class="fc"><i class="no-highlight">37</i>&nbsp;@Slf4j</b>
+<b class="fc"><i class="no-highlight">38</i>&nbsp;public class PharmacyServiceImpl implements PharmacyService {</b>
+<i class="no-highlight">39</i>&nbsp;
+<i class="no-highlight">40</i>&nbsp;    @Autowired
+<i class="no-highlight">41</i>&nbsp;    private PharmacyDbService pharmacyDbService;
+<i class="no-highlight">42</i>&nbsp;
+<i class="no-highlight">43</i>&nbsp;    @Autowired
+<i class="no-highlight">44</i>&nbsp;    private MaskDbService maskDbService;
+<i class="no-highlight">45</i>&nbsp;
+<i class="no-highlight">46</i>&nbsp;    @Autowired
+<i class="no-highlight">47</i>&nbsp;    private MaskPriceRecordDbService priceRecordsDbService;
+<i class="no-highlight">48</i>&nbsp;
+<i class="no-highlight">49</i>&nbsp;
+<i class="no-highlight">50</i>&nbsp;    @Override
+<i class="no-highlight">51</i>&nbsp;    public FindOpenPharmaciesRs findOpenPharmaciesAtCertainDateTime(String dateTimeStr) {
+<b class="fc"><i class="no-highlight">52</i>&nbsp;        log.info(&quot;findOpenPharmaciesAtCertainDateTime Start&quot;);</b>
+<b class="fc"><i class="no-highlight">53</i>&nbsp;        log.info(&quot;Query Date Time:{}&quot;, dateTimeStr);</b>
+<i class="no-highlight">54</i>&nbsp;
+<i class="no-highlight">55</i>&nbsp;//		Query
+<i class="no-highlight">56</i>&nbsp;        LocalDateTime dateTime;
+<b class="fc"><i class="no-highlight">57</i>&nbsp;        if (StringUtils.isBlank(dateTimeStr)) {</b>
+<b class="nc"><i class="no-highlight">58</i>&nbsp;            dateTime = LocalDateTime.now();</b>
+<i class="no-highlight">59</i>&nbsp;        } else {
+<b class="fc"><i class="no-highlight">60</i>&nbsp;            dateTime = LocalDateTime.parse(dateTimeStr, DateTimeFormatter.ofPattern(&quot;yyyy-MM-dd HH:mm&quot;));</b>
+<i class="no-highlight">61</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">62</i>&nbsp;        List&lt;Pharmacy&gt; queryResult = pharmacyDbService.findOpenedPharmacy(dateTime.getDayOfWeek(), dateTime.toLocalTime());</b>
+<i class="no-highlight">63</i>&nbsp;
+<i class="no-highlight">64</i>&nbsp;//		Response
+<b class="fc"><i class="no-highlight">65</i>&nbsp;        FindOpenPharmaciesRs response = new FindOpenPharmaciesRs();</b>
+<b class="fc"><i class="no-highlight">66</i>&nbsp;        List&lt;PharmacyRs&gt; pharmacies = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">67</i>&nbsp;        response.setPharmacies(pharmacies);</b>
+<b class="fc"><i class="no-highlight">68</i>&nbsp;        queryResult.stream().forEach(p -&gt; {</b>
+<b class="fc"><i class="no-highlight">69</i>&nbsp;            PharmacyRs pharmacyRs = new PharmacyRs();</b>
+<b class="fc"><i class="no-highlight">70</i>&nbsp;            pharmacyRs.setName(p.getName());</b>
+<b class="fc"><i class="no-highlight">71</i>&nbsp;            pharmacyRs.setSeqNo(p.getSeqNo());</b>
+<b class="fc"><i class="no-highlight">72</i>&nbsp;            pharmacies.add(pharmacyRs);</b>
+<b class="fc"><i class="no-highlight">73</i>&nbsp;        });</b>
+<b class="fc"><i class="no-highlight">74</i>&nbsp;        log.info(&quot;findOpenPharmaciesAtCertainDateTime End&quot;);</b>
+<b class="fc"><i class="no-highlight">75</i>&nbsp;        return response;</b>
+<i class="no-highlight">76</i>&nbsp;    }
+<i class="no-highlight">77</i>&nbsp;
+<i class="no-highlight">78</i>&nbsp;    @Override
+<i class="no-highlight">79</i>&nbsp;    public FindOpenPharmaciesRs findOpenPharmaciesAtCertainDate(String dateStr) {
+<b class="fc"><i class="no-highlight">80</i>&nbsp;        log.info(&quot;findOpenPharmaciesAtCertainDate Start&quot;);</b>
+<b class="fc"><i class="no-highlight">81</i>&nbsp;        log.info(&quot;Query Date Time:{}&quot;, dateStr);</b>
+<i class="no-highlight">82</i>&nbsp;
+<i class="no-highlight">83</i>&nbsp;//		Query
+<i class="no-highlight">84</i>&nbsp;        LocalDate date;
+<b class="fc"><i class="no-highlight">85</i>&nbsp;        if (StringUtils.isBlank(dateStr)) {</b>
+<b class="nc"><i class="no-highlight">86</i>&nbsp;            date = LocalDate.now();</b>
+<i class="no-highlight">87</i>&nbsp;        } else {
+<b class="fc"><i class="no-highlight">88</i>&nbsp;            date = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern(&quot;yyyy-MM-dd&quot;));</b>
+<i class="no-highlight">89</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">90</i>&nbsp;        List&lt;Pharmacy&gt; queryResult = pharmacyDbService.findOpenedPharmacy(date.getDayOfWeek());</b>
+<i class="no-highlight">91</i>&nbsp;
+<i class="no-highlight">92</i>&nbsp;//		Response
+<b class="fc"><i class="no-highlight">93</i>&nbsp;        FindOpenPharmaciesRs response = new FindOpenPharmaciesRs();</b>
+<b class="fc"><i class="no-highlight">94</i>&nbsp;        List&lt;PharmacyRs&gt; pharmacies = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">95</i>&nbsp;        response.setPharmacies(pharmacies);</b>
+<b class="fc"><i class="no-highlight">96</i>&nbsp;        queryResult.stream().forEach(p -&gt; {</b>
+<b class="fc"><i class="no-highlight">97</i>&nbsp;            PharmacyRs pharmacyRs = new PharmacyRs();</b>
+<b class="fc"><i class="no-highlight">98</i>&nbsp;            pharmacyRs.setName(p.getName());</b>
+<b class="fc"><i class="no-highlight">99</i>&nbsp;            pharmacyRs.setSeqNo(p.getSeqNo());</b>
+<b class="fc"><i class="no-highlight">100</i>&nbsp;            pharmacies.add(pharmacyRs);</b>
+<b class="fc"><i class="no-highlight">101</i>&nbsp;        });</b>
+<i class="no-highlight">102</i>&nbsp;
+<b class="fc"><i class="no-highlight">103</i>&nbsp;        log.info(&quot;findOpenPharmaciesAtCertainDate End&quot;);</b>
+<b class="fc"><i class="no-highlight">104</i>&nbsp;        return response;</b>
+<i class="no-highlight">105</i>&nbsp;    }
+<i class="no-highlight">106</i>&nbsp;
+<i class="no-highlight">107</i>&nbsp;    @Override
+<i class="no-highlight">108</i>&nbsp;    public PharmacyRs findPharmacyMask(Long pharmacySeqno, String sortBy) {
+<b class="fc"><i class="no-highlight">109</i>&nbsp;        log.info(&quot;findPharmacyMask End&quot;);</b>
+<b class="fc"><i class="no-highlight">110</i>&nbsp;        log.info(&quot;pharmacySeqno:{}, sortBy:{}&quot;, pharmacySeqno, sortBy);</b>
+<i class="no-highlight">111</i>&nbsp;//		1.Check Input Data
+<b class="fc"><i class="no-highlight">112</i>&nbsp;        if (!&quot;name&quot;.equals(sortBy) &amp;&amp; !&quot;price&quot;.equals(sortBy)) {</b>
+<b class="fc"><i class="no-highlight">113</i>&nbsp;            throw new RequestInputException(&quot;SortBy column must be name or price. Please check your input.&quot;);</b>
+<i class="no-highlight">114</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">115</i>&nbsp;        if (ObjectUtils.isEmpty(pharmacySeqno)){</b>
+<b class="fc"><i class="no-highlight">116</i>&nbsp;            throw new RequestInputException(&quot;PharmacySeqno can&#39;t be null. Please check your input.&quot;);</b>
+<i class="no-highlight">117</i>&nbsp;        }
+<i class="no-highlight">118</i>&nbsp;//		2. Query Pharmacy 
+<b class="fc"><i class="no-highlight">119</i>&nbsp;        Optional&lt;Pharmacy&gt; pharmacyOpt = pharmacyDbService.findById(pharmacySeqno);</b>
+<b class="fc"><i class="no-highlight">120</i>&nbsp;        Pharmacy pharmacy = pharmacyOpt.orElseThrow(() -&gt; new DataNotFoundException(&quot;Pharmacy data is not found. Please check your input Seqno.&quot;));</b>
+<i class="no-highlight">121</i>&nbsp;//		3. Query Mask Price Record
+<b class="fc"><i class="no-highlight">122</i>&nbsp;        List&lt;MaskPriceRecord&gt; priceRecords = priceRecordsDbService.findByPharmacySeqno(List.of(pharmacy.getSeqNo()));</b>
+<b class="fc"><i class="no-highlight">123</i>&nbsp;        List&lt;Long&gt; itemNos = priceRecords.stream().map(price -&gt; price.getItemNo()).collect(Collectors.toList());</b>
+<i class="no-highlight">124</i>&nbsp;//		4. Query Mask item
+<b class="fc"><i class="no-highlight">125</i>&nbsp;        List&lt;Mask&gt; masks = maskDbService.findByItemNoIn(itemNos);</b>
+<b class="fc"><i class="no-highlight">126</i>&nbsp;        Map&lt;Long, Mask&gt; maskMap = masks.stream().collect(Collectors.toMap(m -&gt; m.getItemNo(), m -&gt; m));</b>
+<i class="no-highlight">127</i>&nbsp;//		5. Convert to Response
+<b class="fc"><i class="no-highlight">128</i>&nbsp;        PharmacyRs response = new PharmacyRs();</b>
+<b class="fc"><i class="no-highlight">129</i>&nbsp;        response.setSeqNo(pharmacy.getSeqNo());</b>
+<b class="fc"><i class="no-highlight">130</i>&nbsp;        response.setName(pharmacy.getName());</b>
+<b class="fc"><i class="no-highlight">131</i>&nbsp;        List&lt;MaskRs&gt; maskRsList = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i class="no-highlight">132</i>&nbsp;        for (MaskPriceRecord priceRecord : priceRecords) {</b>
+<b class="fc"><i class="no-highlight">133</i>&nbsp;            MaskRs maskRs = new MaskRs();</b>
+<i class="no-highlight">134</i>&nbsp;
+<b class="fc"><i class="no-highlight">135</i>&nbsp;            maskRs.setItemNo(priceRecord.getItemNo());</b>
+<b class="fc"><i class="no-highlight">136</i>&nbsp;            maskRs.setPrice(priceRecord.getPrice());</b>
+<i class="no-highlight">137</i>&nbsp;
+<b class="fc"><i class="no-highlight">138</i>&nbsp;            Mask maskDetail = maskMap.get(priceRecord.getItemNo());</b>
+<b class="fc"><i class="no-highlight">139</i>&nbsp;            maskRs.setName(maskDetail.getName());</b>
+<b class="fc"><i class="no-highlight">140</i>&nbsp;            maskRs.setColor(maskDetail.getColor());</b>
+<b class="fc"><i class="no-highlight">141</i>&nbsp;            maskRs.setNumOfPack(maskDetail.getNumOfPack());</b>
+<b class="fc"><i class="no-highlight">142</i>&nbsp;            maskRsList.add(maskRs);</b>
+<b class="fc"><i class="no-highlight">143</i>&nbsp;        }</b>
+<b class="fc"><i class="no-highlight">144</i>&nbsp;        if (&quot;name&quot;.equals(sortBy)) {</b>
+<b class="fc"><i class="no-highlight">145</i>&nbsp;            response.setMasks(sortByName(maskRsList));</b>
+<i class="no-highlight">146</i>&nbsp;        } else {
+<b class="fc"><i class="no-highlight">147</i>&nbsp;            response.setMasks(sortByPrice(maskRsList));</b>
+<i class="no-highlight">148</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">149</i>&nbsp;        log.info(&quot;findPharmacyMask End&quot;);</b>
+<b class="fc"><i class="no-highlight">150</i>&nbsp;        return response;</b>
+<i class="no-highlight">151</i>&nbsp;    }
+<i class="no-highlight">152</i>&nbsp;
+<i class="no-highlight">153</i>&nbsp;    @Transactional
+<i class="no-highlight">154</i>&nbsp;    @Override
+<i class="no-highlight">155</i>&nbsp;    public void updatePharmacyInfo(EditPharmacyNameAndPriceRq request) {
+<b class="fc"><i class="no-highlight">156</i>&nbsp;        log.info(&quot;updatePharmacyInfo Start&quot;);</b>
+<i class="no-highlight">157</i>&nbsp;//		1.Verify input
+<b class="fc"><i class="no-highlight">158</i>&nbsp;        verifyEditRequest(request);</b>
+<i class="no-highlight">159</i>&nbsp;
+<i class="no-highlight">160</i>&nbsp;//		2. If pharmacyName exist update pharmacy.name
+<b class="fc"><i class="no-highlight">161</i>&nbsp;        if (StringUtils.isNoneBlank(request.getPharmacyName())) {</b>
+<b class="fc"><i class="no-highlight">162</i>&nbsp;            updatePharmacyName(request.getPharmacySeqno(), request.getPharmacyName());</b>
+<i class="no-highlight">163</i>&nbsp;        }
+<i class="no-highlight">164</i>&nbsp;
+<i class="no-highlight">165</i>&nbsp;//		3. if maskPrices not empty update mask_price_record
+<b class="fc"><i class="no-highlight">166</i>&nbsp;        if (!CollectionUtils.isEmpty(request.getMaskPrices())) {</b>
+<b class="fc"><i class="no-highlight">167</i>&nbsp;            updateMaskPrice(request.getPharmacySeqno(), request.getMaskPrices());</b>
+<i class="no-highlight">168</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">169</i>&nbsp;        log.info(&quot;updatePharmacyInfo End&quot;);</b>
+<b class="fc"><i class="no-highlight">170</i>&nbsp;    }</b>
+<i class="no-highlight">171</i>&nbsp;
+<i class="no-highlight">172</i>&nbsp;    @Override
+<i class="no-highlight">173</i>&nbsp;    public void deleteItemFromPharmacy(Long itemNo, Long pharmacySeqno) {
+<b class="fc"><i class="no-highlight">174</i>&nbsp;        log.info(&quot;deleteItemFromPharmacy Start&quot;);</b>
+<i class="no-highlight">175</i>&nbsp;//        1.validate input
+<b class="fc"><i class="no-highlight">176</i>&nbsp;        if(ObjectUtils.isEmpty(itemNo)){</b>
+<b class="fc"><i class="no-highlight">177</i>&nbsp;            throw new RequestInputException(&quot;Item_no can&#39;t be null. Please check your input.&quot;);</b>
+<i class="no-highlight">178</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">179</i>&nbsp;        if (ObjectUtils.isEmpty(pharmacySeqno)){</b>
+<b class="fc"><i class="no-highlight">180</i>&nbsp;            throw new RequestInputException(&quot;Pharmacy_Seqno can&#39;t be null. Please check your input.&quot;);</b>
+<i class="no-highlight">181</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">182</i>&nbsp;        LocalDateTime now = LocalDateTime.now();</b>
+<b class="fc"><i class="no-highlight">183</i>&nbsp;        Optional&lt;MaskPriceRecord&gt; result = priceRecordsDbService.findByItemNoAndPharmacy(itemNo, pharmacySeqno);</b>
+<b class="fc"><i class="no-highlight">184</i>&nbsp;        MaskPriceRecord updateData = result</b>
+<b class="fc"><i class="no-highlight">185</i>&nbsp;                .orElseThrow(() -&gt; new DataNotFoundException(&quot;Not Found with Mask item_no with pharmacySeqNp&quot;));</b>
+<b class="fc"><i class="no-highlight">186</i>&nbsp;        updateData.setIsDelete(true);</b>
+<b class="fc"><i class="no-highlight">187</i>&nbsp;        updateData.setUpdateDate(now.toLocalDate());</b>
+<b class="fc"><i class="no-highlight">188</i>&nbsp;        updateData.setUpdateTime(now.toLocalTime());</b>
+<b class="fc"><i class="no-highlight">189</i>&nbsp;        priceRecordsDbService.update(updateData);</b>
+<b class="fc"><i class="no-highlight">190</i>&nbsp;        log.info(&quot;deleteItemFromPharmacy End&quot;);</b>
+<b class="fc"><i class="no-highlight">191</i>&nbsp;    }</b>
+<i class="no-highlight">192</i>&nbsp;
+<i class="no-highlight">193</i>&nbsp;    private void updateMaskPrice(Long pharmacySeqno, List&lt;MaskPirceEditRq&gt; maskPrices) {
+<b class="fc"><i class="no-highlight">194</i>&nbsp;        LocalDateTime now = LocalDateTime.now();</b>
+<i class="no-highlight">195</i>&nbsp;//		3.1 check itemNo is exist
+<b class="fc"><i class="no-highlight">196</i>&nbsp;        for (MaskPirceEditRq updatePrice : maskPrices) {</b>
+<b class="fc"><i class="no-highlight">197</i>&nbsp;            Optional&lt;MaskPriceRecord&gt; result = priceRecordsDbService.findByItemNoAndPharmacy(updatePrice.getItemNo(), pharmacySeqno);</b>
+<b class="fc"><i class="no-highlight">198</i>&nbsp;            MaskPriceRecord updateData = result</b>
+<b class="fc"><i class="no-highlight">199</i>&nbsp;                    .orElseThrow(() -&gt; new DataNotFoundException(&quot;Not Found with Mask item_no with pharmacySeqNp&quot;));</b>
+<b class="fc"><i class="no-highlight">200</i>&nbsp;            updateData.setIsDelete(true);</b>
+<b class="fc"><i class="no-highlight">201</i>&nbsp;            updateData.setUpdateDate(now.toLocalDate());</b>
+<b class="fc"><i class="no-highlight">202</i>&nbsp;            updateData.setUpdateTime(now.toLocalTime());</b>
+<b class="fc"><i class="no-highlight">203</i>&nbsp;            priceRecordsDbService.update(updateData);</b>
+<b class="fc"><i class="no-highlight">204</i>&nbsp;            MaskPriceRecord insertData = new MaskPriceRecord();</b>
+<b class="fc"><i class="no-highlight">205</i>&nbsp;            insertData.setItemNo(updatePrice.getItemNo());</b>
+<b class="fc"><i class="no-highlight">206</i>&nbsp;            insertData.setPharmacySeqno(pharmacySeqno);</b>
+<b class="fc"><i class="no-highlight">207</i>&nbsp;            insertData.setPrice(updatePrice.getPrice());</b>
+<b class="fc"><i class="no-highlight">208</i>&nbsp;            insertData.setCreateDate(now.toLocalDate());</b>
+<b class="fc"><i class="no-highlight">209</i>&nbsp;            insertData.setCreateTime(now.toLocalTime());</b>
+<b class="fc"><i class="no-highlight">210</i>&nbsp;            priceRecordsDbService.insert(insertData);</b>
+<b class="fc"><i class="no-highlight">211</i>&nbsp;        }</b>
+<b class="fc"><i class="no-highlight">212</i>&nbsp;    }</b>
+<i class="no-highlight">213</i>&nbsp;
+<i class="no-highlight">214</i>&nbsp;    private void updatePharmacyName(Long pharmacySeqno, String pharmacyName) {
+<b class="fc"><i class="no-highlight">215</i>&nbsp;        Optional&lt;Pharmacy&gt; result = pharmacyDbService.findById(pharmacySeqno);</b>
+<b class="fc"><i class="no-highlight">216</i>&nbsp;        Pharmacy pharmacy = result.orElseThrow(() -&gt; new DataNotFoundException(&quot;Pharmacy not found, check your input seqno&quot;));</b>
+<b class="fc"><i class="no-highlight">217</i>&nbsp;        pharmacy.setName(pharmacyName);</b>
+<b class="fc"><i class="no-highlight">218</i>&nbsp;        pharmacyDbService.update(pharmacy);</b>
+<b class="fc"><i class="no-highlight">219</i>&nbsp;    }</b>
+<i class="no-highlight">220</i>&nbsp;
+<i class="no-highlight">221</i>&nbsp;    private List&lt;MaskRs&gt; sortByName(List&lt;MaskRs&gt; maskRsList) {
+<b class="fc"><i class="no-highlight">222</i>&nbsp;        return maskRsList.stream().sorted(Comparator.comparing(MaskRs::getName)).collect(Collectors.toList());</b>
+<i class="no-highlight">223</i>&nbsp;    }
+<i class="no-highlight">224</i>&nbsp;
+<i class="no-highlight">225</i>&nbsp;    private void verifyEditRequest(EditPharmacyNameAndPriceRq request) {
+<b class="fc"><i class="no-highlight">226</i>&nbsp;        if (ObjectUtils.isEmpty(request.getPharmacySeqno())) {</b>
+<b class="fc"><i class="no-highlight">227</i>&nbsp;            throw new RequestInputException(&quot;You must input pharmacy seqNo&quot;);</b>
+<i class="no-highlight">228</i>&nbsp;        }
+<i class="no-highlight">229</i>&nbsp;
+<b class="fc"><i class="no-highlight">230</i>&nbsp;        if (!CollectionUtils.isEmpty(request.getMaskPrices())) {</b>
+<b class="fc"><i class="no-highlight">231</i>&nbsp;            for (MaskPirceEditRq maskPrice : request.getMaskPrices()) {</b>
+<b class="fc"><i class="no-highlight">232</i>&nbsp;                if (ObjectUtils.isEmpty(maskPrice.getItemNo())) {</b>
+<b class="fc"><i class="no-highlight">233</i>&nbsp;                    throw new RequestInputException(&quot;You must input Mask item_no&quot;);</b>
+<i class="no-highlight">234</i>&nbsp;                }
+<b class="fc"><i class="no-highlight">235</i>&nbsp;            }</b>
+<i class="no-highlight">236</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">237</i>&nbsp;    }</b>
+<i class="no-highlight">238</i>&nbsp;
+<i class="no-highlight">239</i>&nbsp;    private List&lt;MaskRs&gt; sortByPrice(List&lt;MaskRs&gt; maskRsList) {
+<b class="fc"><i class="no-highlight">240</i>&nbsp;        return maskRsList.stream().sorted(Comparator.comparing(MaskRs::getPrice)).collect(Collectors.toList());</b>
+<i class="no-highlight">241</i>&nbsp;    }
+<i class="no-highlight">242</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2021-05-05 16:16</div>
+</div>
+</body>
+</html>
