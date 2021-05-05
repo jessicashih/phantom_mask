@@ -1,6 +1,6 @@
 # Response
 ## API Document (required)
-  Import two json file into Postman.
+  Import these two json file into Postman.
    1. [demo_api](response/json_file/pharmacy.postman_demoApi.json)
    2. [enviroment](response/json_file/Docker.postman_environment.json)
 
