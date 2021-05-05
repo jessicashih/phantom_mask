@@ -174,7 +174,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://{{domain}}/transaction/v1/totalReport?startDate=2021-01-01&endDate=2021-04-28",
+					"raw": "http://{{domain}}/transaction/v1/totalReport?startDate=2021-01-01&endDate=2021-01-05",
 					"protocol": "http",
 					"host": [
 						"{{domain}}"
@@ -192,7 +192,7 @@
 						},
 						{
 							"key": "endDate",
-							"value": "2021-04-28",
+							"value": "2021-01-05",
 							"description": "查詢迄日\n預設為查詢當日日期"
 						}
 					]
@@ -339,7 +339,8 @@
 					"query": [
 						{
 							"key": "searchName",
-							"value": "A"
+							"value": "A",
+							"description": "查詢字串( 區分大小寫)"
 						}
 					]
 				},
@@ -366,7 +367,8 @@
 					"query": [
 						{
 							"key": "searchName",
-							"value": "Batter"
+							"value": "Batter",
+							"description": "查詢字串( 區分大小寫)"
 						}
 					]
 				},
@@ -393,7 +395,8 @@
 					"query": [
 						{
 							"key": "searchName",
-							"value": "Mas"
+							"value": "Mas",
+							"description": "查詢字串( 區分大小寫)"
 						}
 					]
 				},
