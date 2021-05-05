@@ -30,7 +30,7 @@ public class SearchServiceImpl implements SearchService {
     public SearchRs search(String searchString) {
         log.info("search Start");
         if (StringUtils.isEmpty(searchString)) {
-            throw new RequestInputException("searchString can't be null, Please check imput data.");
+            throw new RequestInputException("SearchString can't be null, Please check input data.");
         }
         List<Pharmacy> allPharmacy = pharmacyDbService.findAll();
         List<Mask> allMask = maskDbService.findAll();

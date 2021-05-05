@@ -69,7 +69,6 @@ public class RelationalQueryService {
                         "        UUID() as uuid," +
                         "        p.seq_no as pharmacy_seqno," +
                         "        p.name as pharmacy_name," +
-                        "        p.balance as pharmacy_balance," +
                         "        m.item_no as item_no," +
                         "        m.name as mask_name," +
                         "        m.color as mask_color," +

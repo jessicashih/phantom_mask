@@ -86,4 +86,32 @@ public class PharmacyDbServiceTest {
         assertEquals(2, results.size(), "Result size is not match");
     }
 
+    @Test
+    public void openAtWed() {
+        LocalDate datetime = LocalDate.of(2021, 05, 5);
+        List<Pharmacy> results = dbService.findOpenedPharmacy(datetime.getDayOfWeek());
+        assertEquals(0, results.size(), "Result size is not match");
+    }
+
+    @Test
+    public void openAtThu() {
+        LocalDate datetime = LocalDate.of(2021, 05, 6);
+        List<Pharmacy> results = dbService.findOpenedPharmacy(datetime.getDayOfWeek());
+        assertEquals(0, results.size(), "Result size is not match");
+    }
+
+    @Test
+    public void openAtSat() {
+        LocalDate datetime = LocalDate.of(2021, 05, 7);
+        List<Pharmacy> results = dbService.findOpenedPharmacy(datetime.getDayOfWeek());
+        assertEquals(0, results.size(), "Result size is not match");
+    }
+
+    @Test
+    public void openAtSun() {
+        LocalDate datetime = LocalDate.of(2021, 05, 8);
+        List<Pharmacy> results = dbService.findOpenedPharmacy(datetime.getDayOfWeek());
+        assertEquals(0, results.size(), "Result size is not match");
+    }
+
 }

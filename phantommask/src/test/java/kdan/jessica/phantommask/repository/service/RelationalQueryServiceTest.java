@@ -44,8 +44,9 @@ public class RelationalQueryServiceTest {
         TransformJsonData jsonConvertor = new TransformJsonData(pharmacyDao, maskDao, customerDao, maskPriceRecordDao, purchaseRecordDao);
         jsonConvertor.transform();
     }
+
     @AfterEach
-    public void deleteAll(){
+    public void deleteAll() {
         pharmacyDao.deleteAll();
         maskDao.deleteAll();
         customerDao.deleteAll();
@@ -68,10 +69,30 @@ public class RelationalQueryServiceTest {
      * 查詢在價格區間內的口罩，並且有販售的藥局
      */
     @Test
-    public void testFindPharmacyWithMaskByPrice() {
+    public void testFindPharmacyWithMaskByPriceBetween() {
         List<PharmacyPriceMaskRelation> result = relationalQueryService.findPharmacyWithMaskByPrice
                 (new BigDecimal("9"), new BigDecimal("11"));
         assertEquals(8, result.size(), "Result size not match");
+    }
+
+    /**
+     * 查詢在價格區間內的口罩，並且有販售的藥局
+     */
+    @Test
+    public void testFindPharmacyWithMaskByPriceMoreThan() {
+        List<PharmacyPriceMaskRelation> result = relationalQueryService.findPharmacyWithMaskByPrice
+                (new BigDecimal("40"), null);
+        assertEquals(6, result.size(), "Result size not match");
+    }
+
+    /**
+     * 查詢在價格區間內的口罩，並且有販售的藥局
+     */
+    @Test
+    public void testFindPharmacyWithMaskByPriceLessThan() {
+        List<PharmacyPriceMaskRelation> result = relationalQueryService.findPharmacyWithMaskByPrice
+                (null, new BigDecimal("10"));
+        assertEquals(22, result.size(), "Result size not match");
     }
 
     /**

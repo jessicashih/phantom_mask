@@ -21,9 +21,6 @@ public class PharmacyPriceMaskRelation {
     @Column(name="pharmacy_name",length=100)
     private String pharmacyName;
 
-    @Column(name="pharmacy_balance")
-    private BigDecimal pharmacyBalance;
-
     @Column(name="item_no")
     private Long itemNo;
 

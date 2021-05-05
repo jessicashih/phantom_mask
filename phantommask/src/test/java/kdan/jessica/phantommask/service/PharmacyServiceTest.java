@@ -9,6 +9,7 @@ import kdan.jessica.phantommask.repository.entity.Mask;
 import kdan.jessica.phantommask.repository.entity.MaskPriceRecord;
 import kdan.jessica.phantommask.repository.entity.Pharmacy;
 import kdan.jessica.phantommask.repository.service.MaskPriceRecordDbService;
+import kdan.jessica.phantommask.repository.service.PharmacyDbService;
 import kdan.jessica.phantommask.service.ex.DataNotFoundException;
 import kdan.jessica.phantommask.service.ex.RequestInputException;
 import org.apache.commons.lang3.StringUtils;
@@ -20,12 +21,15 @@ import kdan.jessica.phantommask.model.FindOpenPharmaciesRs;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 
 @SpringBootTest
@@ -140,6 +144,7 @@ public class PharmacyServiceTest extends BaseServiceTest {
         assertEquals("SortBy column must be name or price. Please check your input.", exception.getMessage(),
                 "Error message not match");
     }
+
     /**
      * GIVEN: original json data
      * WHEN : Query pharmacy with null seqno request string
@@ -191,7 +196,38 @@ public class PharmacyServiceTest extends BaseServiceTest {
         assertNotNull(priceHistory.getUpdateDate(), "Update date can't be null");
         assertNotNull(priceHistory.getUpdateTime(), "Update time can't be null");
         MaskPriceRecord priceNew = maskPriceRecordDbService.findByItemNoAndPharmacy(itemNo, pharmacySeqno).orElseThrow();
-        assertTrue(updatePrice.compareTo(priceNew.getPrice())==0, "Price didn't update."+priceNew.getPrice());
+        assertTrue(updatePrice.compareTo(priceNew.getPrice()) == 0, "Price didn't update." + priceNew.getPrice());
+    }
+
+    /**
+     * GIVEN: Original json data
+     * WHEN : Empty pharmacy seqno
+     * THEN : Throw exception RequestInputException
+     */
+    @Test
+    public void editNameAndPriceWithEmptyPharmacySeqNo() {
+        EditPharmacyNameAndPriceRq request = new EditPharmacyNameAndPriceRq();
+        request.setPharmacySeqno(null);
+        List<MaskPirceEditRq> updatePrices = List.of(new MaskPirceEditRq());
+        request.setMaskPrices(updatePrices);
+        Exception e = assertThrows(RequestInputException.class, () -> service.updatePharmacyInfo(request));
+        assertEquals("You must input pharmacy seqNo", e.getMessage(), "Exception message not match.");
+    }
+
+    /**
+     * GIVEN: Original json data
+     * WHEN : Empty itemNo
+     * THEN : Throw exception RequestInputException
+     */
+    @Test
+    public void editNameAndPriceWithEmptyItemNo() {
+        EditPharmacyNameAndPriceRq request = new EditPharmacyNameAndPriceRq();
+        request.setPharmacySeqno(1L);
+        List<MaskPirceEditRq> updatePrices = List.of(new MaskPirceEditRq());
+        updatePrices.get(0).setPrice(BigDecimal.ONE);
+        request.setMaskPrices(updatePrices);
+        Exception e = assertThrows(RequestInputException.class, () -> service.updatePharmacyInfo(request));
+        assertEquals("You must input Mask item_no", e.getMessage(), "Exception message not match.");
     }
 
     /**
@@ -218,6 +254,28 @@ public class PharmacyServiceTest extends BaseServiceTest {
         assertTrue(priceRecord.getIsDelete(), "Price didn't update.");
         assertNotNull(priceRecord.getUpdateDate(), "Update date can't be null");
         assertNotNull(priceRecord.getUpdateTime(), "Update time can't be null");
+    }
+
+    /**
+     * GIVEN: Original json data
+     * WHEN : Empty itemNo
+     * THEN : Throw exception RequestInputException
+     */
+    @Test
+    public void deleteItemFromPharmacyWithEmptyItemNo() {
+        Exception e = assertThrows(RequestInputException.class, () -> service.deleteItemFromPharmacy(null, 1L));
+        assertEquals("Item_no can't be null. Please check your input.", e.getMessage(), "Exception message not match.");
+    }
+
+    /**
+     * GIVEN: Original json data
+     * WHEN : Empty pharmacy seqNo
+     * THEN : Throw exception RequestInputException
+     */
+    @Test
+    public void deleteItemFromPharmacyWithEmptyPharmacySeqNo() {
+        Exception e = assertThrows(RequestInputException.class, () -> service.deleteItemFromPharmacy(1L, null));
+        assertEquals("Pharmacy_Seqno can't be null. Please check your input.", e.getMessage(), "Exception message not match.");
     }
 
 }
