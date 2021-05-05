@@ -71,6 +71,7 @@ public class MaskServiceImpl implements MaskService {
         maskRs.setPrice(result.getMaskPrice());
         maskRs.setColor(result.getMaskColor());
         maskRs.setName(result.getMaskName());
+        maskRs.setNumOfPack(result.getMaskNumOfPack());
         maskRs.setItemNo(result.getItemNo());
         return maskRs;
     }

@@ -116,8 +116,7 @@ public class TransactionServiceImpl implements TransactionService {
             detail.setAmountOfItem(amountOfMask);
             detail.setAmountOfItem(report.getAmountOfItem());
             totalAmountOfMask += (amountOfMask * perPack);
-            totalAmountOfDollarValue = totalAmountOfDollarValue.
-                    add(report.getAmountOfDollar().multiply(new BigDecimal(amountOfMask)));
+            totalAmountOfDollarValue = totalAmountOfDollarValue.add(report.getAmountOfDollar());
             maskAmountDetails.add(detail);
         }
 

@@ -5,113 +5,219 @@ import kdan.jessica.phantommask.model.MaskPirceEditRq;
 import kdan.jessica.phantommask.model.PharmacyRs;
 import kdan.jessica.phantommask.repository.dao.MaskPriceRecordDao;
 import kdan.jessica.phantommask.repository.dao.PharmacyDao;
+import kdan.jessica.phantommask.repository.entity.Mask;
 import kdan.jessica.phantommask.repository.entity.MaskPriceRecord;
+import kdan.jessica.phantommask.repository.entity.Pharmacy;
 import kdan.jessica.phantommask.repository.service.MaskPriceRecordDbService;
 import kdan.jessica.phantommask.service.ex.DataNotFoundException;
 import kdan.jessica.phantommask.service.ex.RequestInputException;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import kdan.jessica.phantommask.model.FindOpenPharmaciesRs;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest
-public class PharmacyServiceTest {
+@ActiveProfiles("test")
+public class PharmacyServiceTest extends BaseServiceTest {
 
     @Autowired
     private PharmacyService service;
-
     @Autowired
-    private PharmacyDao dao;
+    private MaskPriceRecordDbService maskPriceRecordDbService;
 
-    @Autowired
-    private MaskPriceRecordDao priceRecordsDao;
-
-    @Autowired
-    private MaskPriceRecordDbService priceRecordsDbService;
-
+    /**
+     * GIVEN: Original json data.
+     * WHEN : Query date time at 2021-04-30(FRI) 23:50
+     * THEN : There are four pharmacies open at FRI 23:50
+     * (Better You/MedSavvy/Medlife/Discount Drugs)
+     */
     @Test
-    public void testFindOpenPharmaciesDateTime() {
-        String dateTime = "2021-04-26 11:50";
+    public void findOpenPharmaciesWithDateTime() {
+        String dateTime = "2021-04-30 23:50";
         FindOpenPharmaciesRs response = service.findOpenPharmaciesAtCertainDateTime(dateTime);
-        assertEquals(response.getPharmacies().get(0).getName(), "Neighbors");
+
+        List<String> exceptPharmacy = List.of("Better You", "MedSavvy", "Medlife", "Discount Drugs");
+        assertEquals(exceptPharmacy.size(), response.getPharmacies().size(), "Response size not match.");
+        response.getPharmacies().forEach(p -> {
+            assertTrue(exceptPharmacy.contains(p.getName()), "The pharmacy name is not in expected.");
+        });
     }
 
+    /**
+     * GIVEN: Original json data.
+     * WHEN : Query date time at 2021-04-30(FRI)
+     * THEN : There are 13 pharmacies open at FRI
+     * (Better You/MedSavvy/Medlife/Discount Drugs)
+     */
     @Test
-    public void testFindOpenPharmaciesDate() {
-        String date = "2021-04-26";
+    public void findOpenPharmaciesDate() {
+        String date = "2021-04-30";
         FindOpenPharmaciesRs response = service.findOpenPharmaciesAtCertainDate(date);
-        assertEquals(response.getPharmacies().get(0).getName(), "Neighbors");
+        List<String> exceptPharmacy = pharmacyDao.findAll().stream()
+                .map(p -> p.getName())
+                .filter(name -> StringUtils.isNotBlank(name))
+                .collect(Collectors.toList());
+        response.getPharmacies().forEach(pharmacyRs -> {
+            assertTrue(exceptPharmacy.contains(pharmacyRs.getName()), "The pharmacy name is not in expected.");
+        });
     }
 
+    /**
+     * Find masks that are sold by a given pharmacy, sort by name.
+     * GIVEN: original json data
+     * WHEN : Query pharmacy "DFW Wellness" ,sort by mask name
+     * THEN : MaskRs[0] = "AniMask" , MaskRs[1]="Second Smile"
+     */
     @Test
-    public void testFindPharmaciesMaskSortByName() {
-        Long pharmacySeqno = 1L;
+    public void findPharmaciesMaskSortByName() {
+        String pharmacyName = "DFW Wellness";
+        Pharmacy pharmacy = pharmacyDao.findAll()
+                .stream()
+                .filter(p -> StringUtils.equals(p.getName(), pharmacyName))
+                .findAny().orElseThrow();
+        Long pharmacySeqno = pharmacy.getSeqNo();
         PharmacyRs response = service.findPharmacyMask(pharmacySeqno, "name");
-        assertEquals("Neighbors", response.getName(), "Pharmacy name not match");
-        assertEquals("Free to Roam", response.getMasks().get(0).getName(), "Product name not match");
+        assertEquals(pharmacyName, response.getName(), "Pharmacy name not match");
+        assertEquals("AniMask", response.getMasks().get(0).getName(), "Product name not match");
+        assertEquals("Second Smile", response.getMasks().get(1).getName(), "Product name not match");
     }
 
+    /**
+     * Find masks that are sold by a given pharmacy, sort by price.
+     * GIVEN: original json data
+     * WHEN : Query pharmacy "Neighbors" ,sort by mask name
+     * THEN : MaskRs[0] = "Masquerade" , MaskRs[1] = "Free to Roam", item[2] = "MaskT"
+     */
     @Test
     public void testFindPharmaciesMaskSortByPrice() {
-        Long pharmacySeqno = 1L;
+        String pharmacyName = "Neighbors";
+        Pharmacy pharmacy = pharmacyDao.findAll()
+                .stream()
+                .filter(p -> StringUtils.equals(p.getName(), pharmacyName))
+                .findAny().orElseThrow();
+        Long pharmacySeqno = pharmacy.getSeqNo();
         PharmacyRs response = service.findPharmacyMask(pharmacySeqno, "price");
-        assertEquals("Neighbors", response.getName(), "Pharmacy name not match");
+        assertEquals(pharmacyName, response.getName(), "Pharmacy name not match");
         assertEquals("Masquerade", response.getMasks().get(0).getName(), "Product name not match");
+        assertEquals("Free to Roam", response.getMasks().get(1).getName(), "Product name not match");
+        assertEquals("MaskT", response.getMasks().get(2).getName(), "Product name not match");
     }
 
+    /**
+     * GIVEN: Original json data
+     * WHEN : Query pharmacy with seqno = 0(this raw is not exist)
+     * THEN : Throw exception DataNotFound
+     */
     @Test
-    public void testFindPharmaciesMaskAndDataNotFound() {
-        Long pharmacySeqno = 10L;
+    public void findPharmaciesMaskAndDataNotFound() {
+        Long pharmacySeqno = 0L;
         Exception exception = assertThrows(DataNotFoundException.class, () -> service.findPharmacyMask(pharmacySeqno, "name"));
         assertEquals("Pharmacy data is not found. Please check your input Seqno.", exception.getMessage(),
                 "Error message not match");
     }
 
+    /**
+     * GIVEN: original json data
+     * WHEN : Query pharmacy with wrong sort request string
+     * THEN : Throw exception RequestInputException
+     */
     @Test
-    public void testFindPharmaciesMaskAndInputError() {
-        Long pharmacySeqno = 10L;
-        Exception exception = assertThrows(RequestInputException.class, () -> service.findPharmacyMask(pharmacySeqno, "xxx"));
-        assertEquals("SortBy Column must be name or price. Pleace check your input.", exception.getMessage(),
+    public void testFindPharmaciesMaskAndSortInputError() {
+        String sortBy = "xxx";
+        Exception exception = assertThrows(RequestInputException.class, () -> service.findPharmacyMask(10L, sortBy));
+        assertEquals("SortBy column must be name or price. Please check your input.", exception.getMessage(),
+                "Error message not match");
+    }
+    /**
+     * GIVEN: original json data
+     * WHEN : Query pharmacy with null seqno request string
+     * THEN : Throw exception RequestInputException
+     */
+    @Test
+    public void testFindPharmaciesMaskAndSeqnoInputError() {
+        Exception exception = assertThrows(RequestInputException.class, () -> service.findPharmacyMask(null, "name"));
+        assertEquals("PharmacySeqno can't be null. Please check your input.", exception.getMessage(),
                 "Error message not match");
     }
 
+    /**
+     * GIVEN: Original json data
+     * WHEN : Pharmacy "MedSavvy" seqno ,pharmacyName = "MedSavvy-test" and item[0] price 49.0
+     * THEN : Pharmacy "MedSavvy" update to "MedSavvy-test" and item_no= 11 price 49.21 to 49.0
+     */
     @Test
-    public void testEditNameAndPrice() {
-        Long itemNo = 1L;
-        Long pharmacySeqno = 1L;
-        MaskPriceRecord result = priceRecordsDbService.findByItemNoAndPharmacy(itemNo, pharmacySeqno)
-                .orElseThrow(()->new RuntimeException());
-        Long seqNo = result.getSeqNo();
+    public void editNameAndPrice() {
+        String pharmacyName = "MedSavvy";
+        String pharmacyUpdateName = pharmacyName + "-test";
+        BigDecimal updatePrice = new BigDecimal("49.0");
+//        GIVEN: original json data
+        Pharmacy pharmacy = pharmacyDao.findAll().stream()
+                .filter(p -> StringUtils.equals(p.getName(), pharmacyName))
+                .findAny()
+                .orElseThrow();
+        Long pharmacySeqno = pharmacy.getSeqNo();
+        List<MaskPriceRecord> result = maskPriceRecordDbService.findByPharmacySeqno(List.of(pharmacySeqno));
+        MaskPriceRecord maskPriceRecord = result.stream().findFirst().orElseThrow();
+        Long recordSeqNo = maskPriceRecord.getSeqNo();
+        Long itemNo = maskPriceRecord.getItemNo();
 
+//        WHEN : Phramacy "MedSavvy" seqno ,pharmacyName = "MedSavvy-test" and item[0] price 49.0
         EditPharmacyNameAndPriceRq request = new EditPharmacyNameAndPriceRq();
         request.setPharmacySeqno(pharmacySeqno);
-        request.setPharmacyName("AAA");
-        List<MaskPirceEditRq> updatePrices = new ArrayList<>();
-        MaskPirceEditRq updatePriceRq = new MaskPirceEditRq();
-        updatePriceRq.setItemNo(itemNo);
-        updatePriceRq.setPrice(new BigDecimal("9.99"));
-        updatePrices.add(updatePriceRq);
+        request.setPharmacyName(pharmacyUpdateName);
+        List<MaskPirceEditRq> updatePrices = List.of(new MaskPirceEditRq());
+        updatePrices.get(0).setItemNo(itemNo);
+        updatePrices.get(0).setPrice(updatePrice);
         request.setMaskPrices(updatePrices);
-
         service.updatePharmacyInfo(request);
 
-        Optional<MaskPriceRecord> afterUpdateData =priceRecordsDbService.findById(seqNo);
-        assertNotNull(afterUpdateData.get());
-        assertTrue(afterUpdateData.get().getIsDelete());
+//      THEN : Pharmacy "MedSavvy" update to "MedSavvy-test" and item_no= 11 price 49.21 to 49.0
+        Pharmacy pharmacyAfter = pharmacyDao.findById(pharmacySeqno).orElseThrow();
+        assertEquals(pharmacyUpdateName, pharmacyAfter.getName(), "Pharmacy name didn't update.");
+        MaskPriceRecord priceHistory = maskPriceRecordDao.findById(recordSeqNo).orElseThrow();
+        assertTrue(priceHistory.getIsDelete(), "Price didn't update.");
+        assertNotNull(priceHistory.getUpdateDate(), "Update date can't be null");
+        assertNotNull(priceHistory.getUpdateTime(), "Update time can't be null");
+        MaskPriceRecord priceNew = maskPriceRecordDbService.findByItemNoAndPharmacy(itemNo, pharmacySeqno).orElseThrow();
+        assertTrue(updatePrice.compareTo(priceNew.getPrice())==0, "Price didn't update."+priceNew.getPrice());
     }
 
+    /**
+     * GIVEN: Original json data
+     * WHEN : Pharmacy "MedSavvy" seqno , item[0] seqno
+     * THEN : Pharmacy didn't have item[0]
+     */
     @Test
-    public void deleteItem(){
-        service.deleteItemFromPharmacy(1L,1L);
+    public void deleteItemFromPharmacy() {
+        String pharmacyName = "MedSavvy";
+        Pharmacy pharmacy = pharmacyDao.findAll().stream()
+                .filter(p -> StringUtils.equals(p.getName(), pharmacyName))
+                .findAny()
+                .orElseThrow();
+        Long pharmacySeqno = pharmacy.getSeqNo();
+        List<MaskPriceRecord> result = maskPriceRecordDbService.findByPharmacySeqno(List.of(pharmacySeqno));
+        MaskPriceRecord maskPriceRecord = result.stream().findFirst().orElseThrow();
+        Long recordSeqNo = maskPriceRecord.getSeqNo();
+        Long itemNo = maskPriceRecord.getItemNo();
+
+        service.deleteItemFromPharmacy(itemNo, pharmacySeqno);
+
+        MaskPriceRecord priceRecord = maskPriceRecordDao.findById(recordSeqNo).orElseThrow();
+        assertTrue(priceRecord.getIsDelete(), "Price didn't update.");
+        assertNotNull(priceRecord.getUpdateDate(), "Update date can't be null");
+        assertNotNull(priceRecord.getUpdateTime(), "Update time can't be null");
     }
 
 }

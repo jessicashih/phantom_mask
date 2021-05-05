@@ -17,30 +17,24 @@ import org.springframework.test.context.ActiveProfiles;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-@SpringBootTest
 @Slf4j
 @ActiveProfiles("test")
 public class TransformJsonData {
-    @Autowired
     private PharmacyDao pharmacyDao;
-    @Autowired
     private MaskDao maskDao;
-    @Autowired
     private CustomerDao customerDao;
-    @Autowired
     private MaskPriceRecordDao maskPriceRecordDao;
-    @Autowired
     private PurchaseRecordDao purchaseRecordDao;
     private ObjectMapper mapper = new ObjectMapper();
 
+    @Autowired
     public TransformJsonData(PharmacyDao pharmacyDao, MaskDao maskDao, CustomerDao customerDao,
                              MaskPriceRecordDao maskPriceRecordDao, PurchaseRecordDao purchaseRecordDao) {
         this.pharmacyDao = pharmacyDao;
@@ -50,7 +44,6 @@ public class TransformJsonData {
         this.purchaseRecordDao = purchaseRecordDao;
     }
 
-    @Test
     public void transform() throws IOException {
         LocalDateTime now = LocalDateTime.now();
         Map<String, Mask> maskMap = new HashMap<>();

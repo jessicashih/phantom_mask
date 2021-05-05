@@ -10,17 +10,21 @@ import kdan.jessica.phantommask.repository.service.MaskPriceRecordDbService;
 import kdan.jessica.phantommask.repository.service.PharmacyDbService;
 import kdan.jessica.phantommask.repository.service.PurchaseRecordDbService;
 import kdan.jessica.phantommask.service.ex.DataNotFoundException;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-public class TransactionServiceTest {
+@ActiveProfiles("test")
+public class TransactionServiceTest extends BaseServiceTest {
 
     @Autowired
     private TransactionService service;
@@ -37,45 +41,75 @@ public class TransactionServiceTest {
     @Autowired
     private PurchaseRecordDbService purchaseRecordDbService;
 
+    /**
+     * GIVEN: Original json data
+     * WHEN : Pharmacy = "Better You"(balance=777.61) ,
+     *          Item = pharmacy sell item[0](AniMask,33.65),
+     *          Customer = "Eric Underwood"(balance=952.69)
+     * THEN : Pharmacy balance = 811.26(777.61+33.65)
+     * Customer balance = 919.04(952.69-33.65)
+     */
     @Test
     public void purchasesTransaction() {
-        Long pharmacySeqno = 1L;
-        Long customerId = 1L;
-        Long itemNo = 1L;
-        Customer customerB = customerDbService.findById(customerId).orElseThrow(() -> new DataNotFoundException());
-        BigDecimal customerBalanceBefore = customerB.getBalance();
-        Pharmacy pharmacyB = pharmacyDbService.findById(pharmacySeqno).orElseThrow(() -> new DataNotFoundException());
-        BigDecimal pharmacyBalanceBefore = pharmacyB.getBalance();
-        MaskPriceRecord priceRecords = priceRecordsDbService.findByItemNoAndPharmacy(itemNo, pharmacySeqno).orElseThrow(()->new DataNotFoundException());
-        BigDecimal price = priceRecords.getPrice();
+        //Before update data
+        //Pharmacy
+        String pharmacyName = "Better You";
+        Pharmacy pharmacy = pharmacyDao.findAll().stream()
+                .filter(p -> StringUtils.equals(pharmacyName, p.getName()))
+                .findFirst()
+                .orElseThrow();
+        Long pharmacySeqno = pharmacy.getSeqNo();
+        BigDecimal pharmacyBalanceBefore = pharmacy.getBalance();
+
+        //Item price
+        MaskPriceRecord priceRecord = priceRecordsDbService.findByPharmacySeqno(List.of(pharmacySeqno)).stream()
+                .findFirst()
+                .orElseThrow();
+        BigDecimal price = priceRecord.getPrice();
+        Long itemNo = priceRecord.getItemNo();
+
+        //Customer
+        String customerName = "Eric Underwood";
+        Customer customer = customerDao.findAll().stream()
+                .filter(c -> StringUtils.equals(customerName, c.getName()))
+                .findFirst()
+                .orElseThrow();
+        BigDecimal customerBalanceBefore = customer.getBalance();
+        Long customerId = customer.getCustomerId();
+
         List<PurchaseRecord> purchaseRecord = purchaseRecordDbService.findAll();
-        int purchaseRecordSize = purchaseRecord.size();
+        int purchaseRecordBeforeSize = purchaseRecord.size();
 
         service.purchasesTransaction(pharmacySeqno, customerId, itemNo);
 
-        Customer customerA = customerDbService.findById(customerId).orElseThrow(() -> new DataNotFoundException());
-        BigDecimal customerBalanceAfter = customerA.getBalance();
-        Pharmacy pharmacy = pharmacyDbService.findById(pharmacySeqno).orElseThrow(() -> new DataNotFoundException());
-        BigDecimal pharmacyBalanceAfter = pharmacy.getBalance();
+        BigDecimal customerBalanceAfter = customerDao.findById(customerId)
+                .orElseThrow()
+                .getBalance();
+        BigDecimal pharmacyBalanceAfter = pharmacyDbService.findById(pharmacySeqno)
+                .orElseThrow()
+                .getBalance();
         List<PurchaseRecord> purchaseRecordAfter = purchaseRecordDbService.findAll();
 
         BigDecimal exceptCustomerBalance = customerBalanceBefore.subtract(price);
         BigDecimal exceptPharmacyBalance = pharmacyBalanceBefore.add(price);
 
-        assertEquals(exceptCustomerBalance,customerBalanceAfter);
-        assertEquals(exceptPharmacyBalance,pharmacyBalanceAfter);
-        assertEquals(purchaseRecordSize+1,purchaseRecordAfter.size());
+        assertEquals(exceptCustomerBalance, customerBalanceAfter);
+        assertEquals(exceptPharmacyBalance, pharmacyBalanceAfter);
+        assertEquals(purchaseRecordBeforeSize + 1, purchaseRecordAfter.size());
     }
 
+    /**
+     * GIVEN: Original json data
+     * WHEN : startDate = "2021-01-01",endDate = "2021-01-05"
+     * THEN : total balance = 297.73, item = 91,
+     */
     @Test
-    public void findTotalTransaction(){
+    public void findTotalTransaction() {
         String startDate = "2021-01-01";
-        String endDate = "2021-04-30";
+        String endDate = "2021-01-05";
         TransactionRepostRs response = service.findTotalTransaction(startDate, endDate);
-        assertEquals(9,response.getTotalAmountOfMask());
-        assertEquals(new BigDecimal("51.22"),response.getTotalAmountOfDollarValue());
-        assertEquals(2,response.getDetail().size());
-
+        assertEquals(new BigDecimal("297.73").toString()+" (元)", response.getTotalAmountOfDollarValue(),"Total amount of dollar not match");
+        assertEquals(91+ " (片)",response.getTotalAmountOfMask(),"Total amount of mask not match.");
     }
 
 }

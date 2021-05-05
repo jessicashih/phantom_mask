@@ -110,7 +110,7 @@ public class PharmacyServiceImpl implements PharmacyService {
         log.info("pharmacySeqno:{}, sortBy:{}", pharmacySeqno, sortBy);
 //		1.Check Input Data
         if (!"name".equals(sortBy) && !"price".equals(sortBy)) {
-            throw new RequestInputException("SortBy Column must be name or price. Please check your input.");
+            throw new RequestInputException("SortBy column must be name or price. Please check your input.");
         }
         if (ObjectUtils.isEmpty(pharmacySeqno)){
             throw new RequestInputException("PharmacySeqno can't be null. Please check your input.");
@@ -149,6 +149,7 @@ public class PharmacyServiceImpl implements PharmacyService {
         log.info("findPharmacyMask End");
         return response;
     }
+
     @Transactional
     @Override
     public void updatePharmacyInfo(EditPharmacyNameAndPriceRq request) {

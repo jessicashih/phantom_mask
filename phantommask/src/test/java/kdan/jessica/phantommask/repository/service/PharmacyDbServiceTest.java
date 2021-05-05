@@ -40,6 +40,10 @@ public class PharmacyDbServiceTest {
             pharmacySeqnos.add(pharmacy.getSeqNo());
         }
     }
+    @AfterEach
+    public void deleteData(){
+        dao.deleteAll();
+    }
 
     /**
      * GIVEN: The update mask data seqno is null
@@ -82,9 +86,4 @@ public class PharmacyDbServiceTest {
         assertEquals(2, results.size(), "Result size is not match");
     }
 
-
-    @AfterEach
-    public void deleteData(){
-        dao.deleteAll();
-    }
 }
