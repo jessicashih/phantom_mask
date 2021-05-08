@@ -14,7 +14,7 @@
   p.s. Use `docker-compose down` to remove all container, when you test over.
 
 ## Test Coverage Report(optional)
-  Please open [file](response/coverage_report/index.html) with chrome or other browser.
+  Please open [file](response/coverage%20_report/index.html) with chrome or other browser.
   
 ## Demo Site Url (optional)
   demo ready on [heroku](#demo-site-url-optional)
